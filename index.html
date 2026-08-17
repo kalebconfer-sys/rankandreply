@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rank and Reply · Your Google Profile, Run for You</title>
+<meta name="description" content="We post to your Google Business Profile every week and answer every review. You approve each one from your phone before it goes out. For HVAC, roofing, plumbing and electrical contractors.">
+<link rel="canonical" href="https://rankandreply.com/">
+<meta property="og:title" content="Rank and Reply · Your Google Profile, Run for You">
+<meta property="og:description" content="Weekly Google posts and same-day review replies for home-services contractors. You approve everything before it publishes.">
+<meta property="og:url" content="https://rankandreply.com/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181d; --ink-2:#232a33; --body:#535e6b; --muted:#8a949f;
+    --bg:#ffffff; --sand:#f7f5f1; --line:#e4e0d9;
+    --amber:#e2670a; --amber-d:#c25708; --amber-soft:#fdf0e4;
+    --steel:#2f3a46;
+    --maxw:1060px; --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--body);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,.condensed{font-family:'Barlow Condensed','Barlow',sans-serif;color:var(--ink);line-height:1.08;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+  h1,h2{text-wrap:balance}
+  h1{font-size:clamp(2.6rem,6.4vw,4.5rem)}
+  h2{font-size:clamp(1.9rem,4vw,2.9rem)}
+  h3{font-size:1.3rem;text-transform:none;font-family:'Barlow',sans-serif;font-weight:700;letter-spacing:0}
+  p{font-size:1.06rem;text-wrap:pretty}
+  a{color:inherit;text-decoration:none}
+  strong{color:var(--ink);font-weight:600}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:3px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important}}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .btn{display:inline-block;background:var(--amber);color:#fff;font-weight:700;padding:15px 30px;border-radius:var(--radius);font-size:1.02rem;transition:background .18s,transform .18s;letter-spacing:.01em}
+  .btn:hover{background:var(--amber-d);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+  .btn-ghost:hover{background:var(--sand);transform:none}
+  .eyebrow{font-family:'Barlow',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.5rem;color:var(--ink);text-transform:uppercase;letter-spacing:.01em;display:flex;align-items:center;gap:10px}
+  .logo .pin{width:14px;height:14px;border-radius:50% 50% 50% 2px;transform:rotate(-45deg);background:var(--amber);flex:none}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a.nl{font-weight:500;font-size:.97rem;color:var(--body)}
+  nav .links a.nl:hover{color:var(--ink)}
+  @media(max-width:800px){nav .links .nl{display:none}}
+
+  /* hero */
+  .hero{background:linear-gradient(180deg,var(--sand),#fff);padding:76px 0 56px;border-bottom:1px solid var(--line)}
+  .hero .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:52px;align-items:center}
+  @media(max-width:900px){.hero .grid{grid-template-columns:1fr;gap:38px}}
+  .hero h1{margin:16px 0 20px}
+  .hero h1 em{font-style:normal;color:var(--amber)}
+  .hero p.lead{font-size:1.2rem;max-width:36ch}
+  .cta-row{display:flex;gap:13px;flex-wrap:wrap;margin-top:30px}
+  .under{margin-top:18px;font-size:.94rem;color:var(--muted)}
+
+  /* phone mock */
+  .phone{background:var(--steel);border-radius:22px;padding:13px;box-shadow:0 22px 50px -18px rgba(20,24,29,.45);max-width:330px;margin-left:auto}
+  @media(max-width:900px){.phone{margin:0 auto}}
+  .phone .screen{background:#fff;border-radius:13px;overflow:hidden}
+  .phone .bar{background:var(--sand);padding:9px 14px;font-size:.76rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+  .phone .msg{padding:14px}
+  .phone .card{border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.87rem;line-height:1.5}
+  .phone .card .who{font-weight:700;color:var(--ink);font-size:.82rem;display:flex;justify-content:space-between;gap:8px}
+  .phone .stars{color:var(--amber);letter-spacing:1px}
+  .phone .quote{color:var(--body);margin:7px 0 11px;font-style:italic}
+  .phone .divider{border-top:1px dashed var(--line);margin:11px 0;padding-top:11px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .phone .reply{color:var(--ink)}
+  .phone .btns{display:flex;gap:7px;margin-top:13px}
+  .phone .pb{flex:1;text-align:center;font-size:.76rem;font-weight:700;padding:9px 4px;border-radius:6px;background:var(--sand);color:var(--body);border:1px solid var(--line)}
+  .phone .pb.go{background:var(--amber);color:#fff;border-color:var(--amber)}
+
+  /* generic sections */
+  section{padding:74px 0}
+  .sand{background:var(--sand);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .head{max-width:60ch;margin-bottom:42px}
+  .head p{margin-top:14px;font-size:1.1rem}
+
+  /* lead mix bars */
+  .mix{display:grid;gap:15px;margin-top:6px}
+  .row{display:grid;grid-template-columns:190px 1fr 52px;gap:16px;align-items:center}
+  @media(max-width:640px){.row{grid-template-columns:120px 1fr 44px;gap:11px;font-size:.9rem}}
+  .row .lbl{font-weight:600;color:var(--ink);font-size:.97rem;line-height:1.3}
+  .row .track{background:#e9e5de;border-radius:5px;height:26px;overflow:hidden}
+  .row .fill{height:100%;background:var(--steel);border-radius:5px}
+  .row.hot .fill{background:var(--amber)}
+  .row .pct{font-weight:700;color:var(--ink);text-align:right;font-size:.97rem}
+  .note{margin-top:24px;font-size:.92rem;color:var(--muted);max-width:64ch}
+
+  /* cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  @media(max-width:860px){.cards{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .sand .card{background:#fff}
+  .card .num{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:700;color:var(--amber);line-height:1}
+  .card h3{margin:10px 0 9px}
+  .card p{font-size:1rem}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;counter-reset:s}
+  @media(max-width:860px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;padding-top:20px;border-top:3px solid var(--amber)}
+  .step h3{font-size:1.08rem;margin-bottom:7px}
+  .step p{font-size:.98rem}
+
+  /* pricing */
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px}
+  @media(max-width:760px){.tiers{grid-template-columns:1fr}}
+  .tier{border:1px solid var(--line);border-radius:var(--radius);padding:30px;background:#fff}
+  .tier.feature{border:2px solid var(--amber);position:relative}
+  .tier .tag{position:absolute;top:-11px;left:26px;background:var(--amber);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:99px}
+  .tier .price{font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:700;color:var(--ink);line-height:1;margin:6px 0 4px}
+  .tier .price span{font-family:'Barlow',sans-serif;font-size:1rem;font-weight:500;color:var(--muted)}
+  .tier ul{list-style:none;margin-top:18px;display:grid;gap:9px}
+  .tier li{padding-left:25px;position:relative;font-size:1rem}
+  .tier li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:6px;border-left:2.5px solid var(--amber);border-bottom:2.5px solid var(--amber);transform:rotate(-45deg)}
+
+  /* fit */
+  .fit{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:760px){.fit{grid-template-columns:1fr}}
+  .fit .box{border-radius:var(--radius);padding:28px;border:1px solid var(--line);background:#fff}
+  .fit .box.no{background:var(--sand)}
+  .fit h3{margin-bottom:14px}
+  .fit ul{list-style:none;display:grid;gap:10px}
+  .fit li{padding-left:26px;position:relative;font-size:1rem}
+  .fit .yes li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:6px;border-left:2.5px solid var(--amber);border-bottom:2.5px solid var(--amber);transform:rotate(-45deg)}
+  .fit .no li::before{content:"";position:absolute;left:2px;top:.72em;width:13px;height:2.5px;background:var(--muted)}
+
+  /* cta band */
+  .band{background:var(--ink);color:#c8cfd7;text-align:center}
+  .band h2{color:#fff}
+  .band p{max-width:52ch;margin:16px auto 0;font-size:1.1rem}
+  .band .cta-row{justify-content:center}
+  .band a.mail{color:#fff;border-bottom:2px solid var(--amber)}
+
+  /* footer */
+  footer{padding:44px 0;font-size:.92rem;color:var(--muted);border-top:1px solid var(--line)}
+  footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  footer a:hover{color:var(--ink)}
+  footer .fl{display:flex;gap:20px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="/" class="logo"><span class="pin"></span>Rank and Reply</a>
+    <div class="links">
+      <a class="nl" href="#why">Why Google</a>
+      <a class="nl" href="#how">How it works</a>
+      <a class="nl" href="#pricing">Pricing</a>
+      <a class="btn" href="#contact">Get a profile check</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">HVAC · Roofing · Plumbing · Electrical</span>
+      <h1>Your next job comes from Google. <em>Not from Facebook.</em></h1>
+      <p class="lead">We post to your Google Business Profile every week and answer every review that comes in. You approve each one from your phone before it goes out.</p>
+      <div class="cta-row">
+        <a class="btn" href="#contact">Get a free profile check</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="under">No contract. Cancel any month. You own the profile, always.</p>
+    </div>
+
+    <div class="phone" role="img" aria-label="Phone showing a review reply awaiting approval, with Post reply, Edit and Skip buttons.">
+      <div class="screen">
+        <div class="bar">Approve · 1 waiting</div>
+        <div class="msg">
+          <div class="card">
+            <div class="who"><span>Dana R.</span><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
+            <div class="quote">&ldquo;Furnace died Sunday night. Someone was here by 8am Monday and didn't gouge me on the weekend rate.&rdquo;</div>
+            <div class="divider">Your reply</div>
+            <div class="reply">Thanks Dana &mdash; glad we could get to you first thing. Appreciate you taking the time to write this up.</div>
+            <div class="btns">
+              <span class="pb go">Post reply</span>
+              <span class="pb">Edit</span>
+              <span class="pb">Skip</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="why">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">The part most agencies get wrong</span>
+      <h2>Where contractor leads actually come from</h2>
+      <p>Every marketing company that emails you wants to run your social media. Here is how the work actually arrives for a home-services business, from published 2026 industry benchmarks:</p>
+    </div>
+
+    <div class="mix">
+      <div class="row"><span class="lbl">Paid search &amp; Local Services Ads</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="pct">40%</span></div>
+      <div class="row hot"><span class="lbl">Organic search &amp; Google Business Profile</span><span class="track"><span class="fill" style="width:75%"></span></span><span class="pct">30%</span></div>
+      <div class="row"><span class="lbl">Referral &amp; repeat customers</span><span class="track"><span class="fill" style="width:50%"></span></span><span class="pct">20%</span></div>
+      <div class="row"><span class="lbl">Everything else &mdash; email, texts, social, mailers, combined</span><span class="track"><span class="fill" style="width:25%"></span></span><span class="pct">10%</span></div>
+    </div>
+
+    <p class="note">Social media is not a line on that chart. It is a quarter of the bottom line, shared with junk mail. Meanwhile your Google profile sits in the second slot &mdash; it is free, you already own it, and for most contractors it hasn't been touched since the day it was set up.</p>
+  </div>
+</section>
+
+<section class="sand">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">What you get</span>
+      <h2>Two jobs, done every week</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="num">1</div>
+        <h3>Weekly Google posts</h3>
+        <p>A real post on your profile every week &mdash; the job you just finished, a seasonal warning, what a repair actually runs. Each one carries a Call or Book button, so reading it and phoning you is one tap.</p>
+      </div>
+      <div class="card">
+        <div class="num">2</div>
+        <h3>Every review answered</h3>
+        <p>New reviews get a reply drafted the same day, usually within hours. Good ones and bad ones. A profile where the owner answers reads completely differently to the person deciding between you and two others.</p>
+      </div>
+      <div class="card">
+        <div class="num">3</div>
+        <h3>You approve everything</h3>
+        <p>Nothing publishes on its own. Every post and every reply lands on your phone first with three buttons: post it, edit it, skip it. Most take about five seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">How it works</span>
+      <h2>Set up once, then it's a few taps a week</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>You grant access</h3>
+        <p>You add Rank and Reply as a manager on your Google Business Profile. You stay the owner. You can remove us in two clicks, any time, and nothing about your listing changes.</p>
+      </div>
+      <div class="step">
+        <h3>We learn how you talk</h3>
+        <p>We read what you've already written &mdash; your site, your existing replies, your posts &mdash; and match it. The goal is that your customers can't tell anyone else is involved.</p>
+      </div>
+      <div class="step">
+        <h3>Drafts reach your phone</h3>
+        <p>Posts on a weekly schedule, review replies as reviews arrive. Each one shows up ready to go, with the original review printed above it so you're never approving blind.</p>
+      </div>
+      <div class="step">
+        <h3>You tap, it publishes</h3>
+        <p>Approve and it's live on your profile within seconds. Skip it and it's gone. Edit it and we learn from the change for next time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sand" id="pricing">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Pricing</span>
+      <h2>Flat monthly. No contract.</h2>
+      <p>One price, billed monthly, cancel whenever. No setup fee, no percentage of anything, no long-term paperwork.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <span class="eyebrow">Owner-operator</span>
+        <div class="price">$800<span> /month</span></div>
+        <p style="font-size:.97rem">One truck, one location.</p>
+        <ul>
+          <li>Weekly Google posts</li>
+          <li>Every review answered</li>
+          <li>Profile cleanup at the start</li>
+          <li>Monthly summary of what came in</li>
+        </ul>
+      </div>
+      <div class="tier feature">
+        <span class="tag">Most contractors</span>
+        <span class="eyebrow">Growing crew</span>
+        <div class="price">$1,500<span> /month</span></div>
+        <p style="font-size:.97rem">Multiple trucks, or more than one service area.</p>
+        <ul>
+          <li>4 Google posts a month</li>
+          <li>Every review answered, same day</li>
+          <li>Profile cleanup and photo audit</li>
+          <li>Seasonal campaigns &mdash; heat waves, freezes, storms</li>
+          <li>Monthly call for what's coming up</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Multi-location and commercial work is quoted separately. If you run more than five locations, say so in your first email.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Straight answer</span>
+      <h2>Who this is for</h2>
+    </div>
+    <div class="fit">
+      <div class="box yes">
+        <h3>A good fit if</h3>
+        <ul>
+          <li>You're an HVAC, roofing, plumbing or electrical business</li>
+          <li>Your Google profile has reviews sitting there with no reply</li>
+          <li>You haven't posted to it in months, or ever</li>
+          <li>You'd answer reviews yourself if you had the time, and you don't</li>
+          <li>You want to see everything before it goes out</li>
+        </ul>
+      </div>
+      <div class="box no">
+        <h3>Not a good fit if</h3>
+        <ul>
+          <li>You want someone to run Facebook and Instagram &mdash; that isn't this</li>
+          <li>You want fake or incentivised reviews. We won't, and Google removes them</li>
+          <li>You want to hand it over completely and never look at it</li>
+          <li>You're looking for guaranteed lead numbers &mdash; nobody honest can promise those</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="contact">
+  <div class="wrap">
+    <span class="eyebrow">Start here</span>
+    <h2>Free profile check, no call required</h2>
+    <p>Email your business name. You'll get back a plain list of what your Google profile is missing &mdash; unanswered reviews, when you last posted, what's incomplete. Yours to keep whether or not you hire anyone.</p>
+    <div class="cta-row">
+      <a class="btn" href="mailto:kaleb@rankandreply.com?subject=Profile%20check">Email kaleb@rankandreply.com</a>
+    </div>
+    <p style="margin-top:22px;font-size:.95rem;color:#8f9aa5">Run by Kaleb Confer out of Erie, Pennsylvania.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 Rank and Reply &middot; Erie, PA</span>
+    <span class="fl">
+      <a href="/privacy-policy.html">Privacy</a>
+      <a href="/terms-of-service.html">Terms</a>
+      <a href="mailto:kaleb@rankandreply.com">kaleb@rankandreply.com</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>

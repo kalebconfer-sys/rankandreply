@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · Rank and Reply</title>
+<meta name="description" content="What data Rank and Reply accesses, why, who it reaches, and how to remove our access.">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#14181d;--body:#535e6b;--muted:#8a949f;--sand:#f7f5f1;--line:#e4e0d9;--amber:#e2670a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--body);line-height:1.68;background:#fff;-webkit-font-smoothing:antialiased}
+  a{color:var(--amber)}
+  h1,h2{font-family:'Barlow Condensed',sans-serif;color:var(--ink);text-transform:uppercase;line-height:1.1;font-weight:700}
+  h1{font-size:clamp(2.1rem,5vw,3rem);margin-bottom:8px}
+  h2{font-size:1.45rem;margin:38px 0 12px}
+  h3{font-size:1.05rem;color:var(--ink);margin:22px 0 8px;font-weight:700}
+  p,li{font-size:1.03rem}
+  ul{margin:12px 0 12px 22px;display:grid;gap:8px}
+  .wrap{max-width:740px;margin:0 auto;padding:0 24px}
+  nav{border-bottom:1px solid var(--line);background:var(--sand)}
+  nav .wrap{display:flex;align-items:center;height:64px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.4rem;color:var(--ink);text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:10px}
+  .logo .pin{width:13px;height:13px;border-radius:50% 50% 50% 2px;transform:rotate(-45deg);background:var(--amber)}
+  main{padding:54px 0 70px}
+  .updated{color:var(--muted);font-size:.95rem;margin-bottom:30px}
+  .callout{background:var(--sand);border:1px solid var(--line);padding:20px 22px;border-radius:8px;margin:24px 0}
+  .callout .lbl{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:8px}
+  .callout p{font-size:1rem}
+  footer{border-top:1px solid var(--line);padding:30px 0;font-size:.92rem;color:var(--muted)}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="/" class="logo"><span class="pin"></span>Rank and Reply</a></div></nav>
+
+<main>
+<div class="wrap">
+
+<h1>Privacy Policy</h1>
+<p class="updated">Last updated 16 August 2026</p>
+
+<p>Rank and Reply is operated by RevivaCatch LLC, a Pennsylvania limited liability company. This page explains what information we handle, why, and who else sees it. It is written to be read, not to be skimmed past.</p>
+
+<h2>Who this covers</h2>
+<p>Two groups: business owners who hire us ("clients"), and people who contact us through this website. We do not run advertising, we do not build audience profiles, and we do not sell data to anyone under any circumstance.</p>
+
+<h2>What we access from Google</h2>
+<p>When a client adds us as a manager on their Google Business Profile and authorises our application, we access the following through Google's Business Profile APIs:</p>
+<ul>
+  <li>The business listing itself &mdash; name, address, hours, categories, photos, and completeness of the profile.</li>
+  <li>Posts on the profile, so we can publish new ones and see what is already there.</li>
+  <li>Reviews left on the profile, including the reviewer's public display name, star rating, and review text, so we can draft replies.</li>
+</ul>
+<p>We request a single Google permission scope, <code>business.manage</code>, because it is the only scope that permits publishing posts and review replies. We do not access Gmail, Google Drive, Google Ads, contacts, calendars, or any other Google product.</p>
+
+<div class="callout">
+  <span class="lbl">Limited Use</span>
+  <p>Rank and Reply's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements. Google user data is used only to provide and improve the service described on this site. It is never sold, never used for advertising, and never used to train machine-learning or AI models.</p>
+</div>
+
+<h2>Who else sees it</h2>
+<p>Drafting a post or a review reply means a language model has to read the material. We are direct about that because it is a real transfer of information, not a technicality.</p>
+<ul>
+  <li><strong>Anthropic</strong> processes the text we send for drafting &mdash; the topic of a post, or the text and star rating of a review being replied to. Anthropic's API terms state that inputs submitted through the API are not used to train their models. We send the review text and the reviewer's public display name where it appears in the review. We do not send addresses, phone numbers, or any customer contact details.</li>
+  <li><strong>Google</strong> receives the finished post or reply when your client approves it, because that is where it publishes.</li>
+  <li><strong>Telegram</strong> carries approval messages between our system and the client's phone. A draft post or reply passes through Telegram's servers on the way.</li>
+</ul>
+<p>Some drafting and safety checking runs on models hosted on our own hardware, in which case the text does not leave our machines at all. Nobody else receives Google user data. We do not use subprocessors beyond those named here, and we will update this page before that changes.</p>
+
+<h2>What we store, and for how long</h2>
+<p>We keep drafts, approvals, edits, and rejections in a local database so the system learns a client's voice and does not repeat itself. That database holds post text, review text, and the approval decisions made against them. It lives on hardware we control and is not shared.</p>
+<p>Clients may ask us to delete their data at any time, and we will do so within 30 days. Removing us as a manager on your Google Business Profile immediately ends our access regardless.</p>
+
+<h2>How to remove our access</h2>
+<p>You do not need to ask us. Open your Google Business Profile, go to Business Profile settings, then People and access, and remove Rank and Reply. Access ends immediately. You can also revoke the application at <a href="https://myaccount.google.com/permissions" rel="noopener">myaccount.google.com/permissions</a>.</p>
+
+<h2>This website</h2>
+<p>This site is static, hosted on GitHub Pages. It sets no cookies, runs no analytics, and has no tracking pixels or advertising tags. It loads a web font from Google Fonts, which means Google's font servers receive your IP address as part of that request &mdash; the same as on most sites on the internet. There is no contact form; the only way to reach us here is email, and we keep those emails as long as the conversation is useful.</p>
+
+<h2>Security</h2>
+<p>Access credentials are stored on encrypted local storage and are never committed to source control or shared between clients. Each client's data is kept separate. We are a small operation and we do not pretend to hold enterprise certifications we have not earned.</p>
+
+<h2>Your rights</h2>
+<p>You can ask what we hold about you, ask for it to be corrected, or ask for it to be deleted. Email us and we will handle it. We do not charge for this and we do not require a particular form of words.</p>
+
+<h2>Children</h2>
+<p>This is a service sold to businesses. It is not directed at anyone under 18 and we do not knowingly collect information from children.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes materially, we will update the date at the top and email active clients before the change takes effect.</p>
+
+<h2>Contact</h2>
+<p>Email <a href="mailto:kaleb@rankandreply.com">kaleb@rankandreply.com</a>. A postal address is available on request and is included on every commercial email we send.</p>
+
+</div>
+</main>
+
+<footer><div class="wrap">&copy; 2026 Rank and Reply &middot; <a href="/">Home</a> &middot; <a href="/terms-of-service.html">Terms</a></div></footer>
+
+</body>
+</html>
