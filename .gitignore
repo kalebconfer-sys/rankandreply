@@ -1,0 +1,7 @@
+# Secrets and private business data never go in this public repo.
+.env
+business/runs/
+business/data/
+*.csv
+!business/**/templates/*.csv
+__pycache__/

@@ -1,0 +1,4 @@
+# GitHub Pages: keep the internal business playbook off rankandreply.com
+# if this branch is ever merged into main.
+exclude:
+  - business
