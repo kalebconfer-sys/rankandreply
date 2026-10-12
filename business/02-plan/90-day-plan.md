@@ -121,6 +121,7 @@ Day-by-day steps are in [`day-by-day.md`](day-by-day.md).
 | Once a day (20 min) | `autopilot.py leads` on a new Apollo export; check 20 first lines against `probe_answer`; upload | **You** run it; the AI does the rest |
 | Once a day (15–20 min) | `scout.py run`: Reddit and Upwork posts found, scored and drafted → **you** post up to 3 Reddit replies by hand and submit good Upwork proposals | Scout, Worker, Claude, **you** |
 | Monday (45 min) | Council review: numbers, the weakest step, one change | Gemini, ChatGPT, Claude, **you** |
+| Monday (10 min) | `scout.py posts`: schedule 3 LinkedIn posts for the week; they publish themselves | Claude writes, **you** schedule |
 | Friday (15 min) | Fill in the scoreboard (copy [`templates/scoreboard.csv`](templates/scoreboard.csv) to `business/data/` once) | You |
 
 ## Budget

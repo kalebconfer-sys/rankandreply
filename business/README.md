@@ -39,7 +39,7 @@
 |---|---|
 | `council.py` | Runs one task across Claude, ChatGPT, Gemini, Perplexity and your local model. Modes: side-by-side answers, a debate with a written decision, cited research, and bulk work over a spreadsheet |
 | `visibility.py` | The product. `enrich` → `probe` → `firstline` turns an Apollo export into personalized opening lines, each checked against the AI's saved answer. `snapshot` produces the client report (HTML/PDF) |
-| `scout.py` | Finds people asking for this on Reddit and Upwork: reads F5Bot and Upwork alert emails (read-only), searches reddit.com through Perplexity, scores each post, drafts a reply or proposal. **You post by hand**: Reddit treats automated promotional posting as spam |
+| `scout.py` | Finds people asking for this on Reddit, Hacker News, Upwork (and X, Bluesky and Stack Exchange with paid Syften alerts). Reads the alert emails read-only, searches reddit.com through Perplexity, scores each post, and drafts a reply or proposal. **You post by hand**; every one of these platforms bans automated replies. `scout.py posts` writes 3 LinkedIn posts a week for your own profile, which you schedule once. Every run writes a `today.html` page with Open and Copy buttons |
 | `autopilot.py` | The daily routine in two commands: `leads` (Apollo export → ready-to-upload CSV) and `replies` (tag, draft, run reports for every yes, write an outbox for you to send) |
 | `prompts/` | Templates for tagging replies, drafting replies, Upwork proposals, writing pages and QA |
 

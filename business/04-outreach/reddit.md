@@ -7,7 +7,35 @@
 | **Reddit** | **Automated.** F5Bot emails you when your keywords appear on Reddit. `scout.py` reads those emails, searches reddit.com through Perplexity (or Claude), scores each thread, and drafts a reply | **You, by hand**, from your own account, after rewriting the draft in your own words. **Reddit Ads** is the one legitimate way to post without typing it yourself (Phase 3 test) |
 | **Upwork** | **Automated.** Upwork's saved-search email alerts → `scout.py` drafts a proposal for each new job | **You submit by hand.** Bots that submit proposals get accounts banned |
 
-Your part: **about 15–20 minutes a day.** Run `python scout.py run`, read the outbox, post 1–3 Reddit replies and send any good Upwork proposals.
+Your part: **about 15–20 minutes a day**, plus 10 minutes on Mondays:
+- **Daily:** run `python scout.py run` and open the page it prints (`today.html`). Every post is listed with an **Open** button (goes to the thread or job) and a **Copy** button (copies the draft). Open, read, copy, rewrite in your own words, post. Tick "done".
+- **Mondays:** run `python scout.py posts`. You get 3 posts for your own LinkedIn profile. Schedule all 3 at once, and they publish on their own through the week.
+
+## Can a bot post for me anywhere?
+
+**Not where business buyers are.** In 2026 every major platform has moved against automated replies:
+
+| Platform | Can the bot find posts? | Can a bot post replies? | What we do |
+|---|---|---|---|
+| Reddit | Yes, via F5Bot emails and Perplexity search (Reddit's own API needs approval) | No. Reddit's spam policy covers bots and AI used for promotion | You post by hand |
+| Hacker News | Yes. F5Bot covers it for free | No | You post by hand |
+| X | Yes, via Syften (paid) | No. Since Feb 2026 X's API blocks automated replies unless the person @mentioned you ([X developers via Tekedia](https://www.tekedia.com/x-restricts-programmatic-bot-replies-to-boost-genuine-users-interaction/)) | You reply by hand |
+| Stack Exchange, Bluesky | Yes, via Syften (paid) | Many Stack Exchange sites ban AI-written answers | You post by hand |
+| LinkedIn | No (its user agreement bans bots and scraping) | **Your own posts: yes**, through LinkedIn's built-in scheduler or Buffer. Comments and DMs: no | **3 posts a week on autopilot** (below) |
+| Upwork | Yes, via its email alerts | No. Bots that submit proposals get banned | You submit by hand |
+
+So the bot does the searching, scoring and writing. Your own LinkedIn posts publish themselves once scheduled. Replies to other people's posts are yours to send.
+
+## Your own posts on autopilot (LinkedIn)
+
+`python scout.py posts` writes 3 posts a week:
+- **A data post** built only on real numbers from your reports, such as "of 6 companies I checked this month, the median was named in 15% of answers." It never names or hints at which companies you checked. If there are no reports yet, it skips this post.
+- **A how-to**, for example how to check what ChatGPT says about your company yourself.
+- **An answer** to a question people asked online that week, paraphrased, never quoting anyone.
+
+Schedule them once: on desktop, LinkedIn > Start a post > paste > clock icon, or connect LinkedIn to Buffer. They go out Monday, Wednesday and Friday at 8:00 am. Read each one first and change anything that doesn't sound like you.
+
+Why it's worth 10 minutes a week: when someone gets your cold email or sees your Reddit reply and looks you up, they find a profile with useful, specific posts. That makes everything else convert better.
 
 ## Why the AI doesn't post on Reddit for you
 
@@ -36,7 +64,8 @@ So the AI does all the looking and drafting, and the posting stays human. A real
    AI Overviews traffic
    LLM visibility
    ```
-   F5Bot throttles very common keywords, so keep them specific. If it's too noisy or misses posts, Syften (about $20–40/month) is the paid step up.
+   F5Bot also watches Hacker News for the same keywords at no cost. It throttles very common keywords, so keep them specific.
+   **Optional, paid:** Syften (about $20–40/month) reportedly also watches X, Bluesky, Stack Exchange and more. If you add it, point its email alerts at the same inbox; the scout already reads `syften.com` emails.
 2. **Upwork saved searches with email alerts:** see [`marketplaces.md`](marketplaces.md).
 3. **Let the scout read those alert emails** (choose one):
    - **Automatic:** turn on 2-Step Verification in your Google account, create an **App password** named "scout", and put `IMAP_USER` and `IMAP_PASSWORD` in `business/tools/.env`. The scout opens the inbox **read-only**, fetches only emails from `upwork.com` and `f5bot.com`, and never marks, moves or deletes anything. You can revoke the app password any time. Better still, send the alerts to a separate Gmail address used only for alerts, and give the scout that one.
@@ -52,7 +81,7 @@ So the AI does all the looking and drafting, and the posting stays human. A real
 python scout.py run
 ```
 
-Then open `business/data/outbox/<date>/scout-*.txt`. Each file has the link, what the alert showed, a score (buyer, peer or irrelevant) and a draft.
+Then open the page it prints: `business/data/outbox/<date>/today.html`. Each item has the link, what the alert showed, a score (buyer, peer or irrelevant), the draft and a Copy button. The same drafts are also saved as `scout-*.txt` files.
 
 **Reddit (at most 3 replies a day):**
 1. Open the link and read the **whole thread**. The alert only shows part of it, and someone may already have answered.

@@ -55,6 +55,9 @@ python council.py status
 | `scout.py run` | Reads new Upwork and F5Bot alert emails, searches reddit.com for recent buyer questions, scores every post, and drafts replies and proposals into `business/data/outbox/<date>/scout-*.txt` |
 | `scout.py inbox` / `scout.py reddit` | Just one of the two sources |
 | `--eml-dir folder` | Parse saved `.eml` files instead of logging in to the inbox |
+| `scout.py posts` | 3 posts for your own LinkedIn profile (data, how-to, question of the week). Only real report numbers, never the names of companies you checked. You schedule them once |
+
+Every scout and autopilot run also writes `today.html` in the day's outbox: one page with every draft, an Open link and a Copy button (`outbox.py`). Links found in alert emails from Upwork, F5Bot (Reddit, Hacker News) and Syften (X, Bluesky, Stack Exchange, Indie Hackers) are all recognized.
 
 **What it never does:**
 - **Post anything.** You post every reply and submit every proposal by hand.

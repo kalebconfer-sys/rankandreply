@@ -173,10 +173,14 @@ def cmd_replies(args) -> None:
         summary.append({"email": email, "company": company, "label": label, "file": name if body else "", "attach": attach})
 
     V.write_rows(str(outbox / "summary.csv"), summary or [{"email": "", "label": ""}])
+    from outbox import write_digest
+    page = write_digest(outbox)
     if suppress:
         with open(V.DATA / "suppression.txt", "a", encoding="utf-8") as f:
             f.write("\n".join(e for e in suppress if e) + "\n")
     print(f"\n{dict(counts)}\nOutbox: {outbox}")
+    if page:
+        print(f"Open this page to work through them: {page}")
     if suppress:
         print(f"Added {len(suppress)} to business/data/suppression.txt. Also add them to Instantly's blocklist now.")
     if counts["wants_call"]:

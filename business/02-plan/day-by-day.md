@@ -180,7 +180,7 @@ Same as day 8, for **Segment B** (services, United States only, with `--region` 
 
 **Once a day (20 min): leads.** Run `autopilot.py leads` on a new verified Apollo export, then check 20 rows. At full volume each sending day uses about 200 new leads, so keep 3 days queued.
 
-**Once a day (15–20 min): Reddit and Upwork.** Run `python scout.py run`, then open the `scout-*.txt` files in today's outbox:
+**Once a day (15–20 min): Reddit and Upwork.** Run `python scout.py run`, then open the `today.html` page it prints:
 - **Reddit:** read the whole thread and the subreddit rules, rewrite the draft in your own words, and post. At most 3 a day.
 - **Upwork:** check the job, edit the proposal, and submit by hand. At most 5 a week.
 
@@ -201,6 +201,8 @@ Also on **day 15**, buy 5 more domains and 15 inboxes and start warming them. **
 python council.py debate "Here is this week's scoreboard. Which funnel step is weakest, why, and what single change should we make this week?" --file ../data/scoreboard.csv
 ```
 (Copy `business/02-plan/templates/scoreboard.csv` to `business/data/scoreboard.csv` once and fill in that copy.)
+
+**Mondays (10 min): your own posts.** Run `python scout.py posts`, read the 3 LinkedIn posts, and schedule them (LinkedIn's built-in scheduler or Buffer). They publish themselves through the week.
 
 **Fridays:** fill in the scoreboard row for the week.
 
