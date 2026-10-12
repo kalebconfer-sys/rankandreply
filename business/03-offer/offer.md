@@ -32,8 +32,8 @@ Marketplace prices include the platform's fee, so the price per unit of work is 
 
 | Scope | Direct (Stripe) | Upwork Catalog | Fiverr |
 |---|---|---|---|
-| Snapshot (10 questions × 4 engines × 2 runs, top 5 fixes) | Free (cold-email lead magnet) | $150 (Starter; also includes 3 named competitors) | $79 (Basic) |
-| Standard audit (25 questions × 4 × 2, cited sites, top 5 fixes) | — | $350 | $199 |
+| Snapshot (10 questions × 4 engines × 2 runs, top 5 fixes) | Free (cold-email lead magnet) | $99 (Starter) | $99 (Basic) |
+| Standard audit (25 questions × 4 × 2, cited sites, top 5 fixes) | — | $249 | $249 |
 | Fix Plan (40 × 4 × 3, roadmap, 2 pages) | $490 | $550 | $590 |
 
 The snapshot is free in cold email because it's the cost of starting a conversation with someone who didn't ask. On a marketplace the buyer came looking, so it's paid.

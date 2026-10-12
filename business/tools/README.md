@@ -34,7 +34,23 @@ python council.py status
 | `ask "question" [--file doc.md]` | Sends the same question to every ready AI and shows the answers side by side |
 | `debate "question" [--file doc.md]` | Round 1: each AI answers alone. Round 2: each reads the others and revises. Then Claude writes a decision with next actions and the result that would prove it wrong |
 | `research "topic"` | Live web research with sources (Perplexity, or Claude with web search) |
-| `bulk --in leads.csv --prompt prompts/x.txt --out out.csv --column name` | Runs a prompt on every row of a spreadsheet: scoring leads, writing first lines, tagging replies. Uses the free local model first. Re-run it to resume after a crash |
+| `bulk --in leads.csv --prompt prompts/x.txt --out out.csv --column name [--ai claude]` | Runs a prompt on every row of a spreadsheet. Uses the free local model unless you pass `--ai`; **use `--ai claude` for anything a buyer reads**. Re-run the same command to resume: failed rows are retried, and a row keeps its stored value only if its inputs are unchanged. It stops up front if the prompt's `{placeholders}` don't match the CSV columns |
+
+`--file` can be repeated on `ask` and `debate` to attach several documents.
+
+## visibility.py and autopilot.py
+
+| Command | What it does |
+|---|---|
+| `autopilot.py leads --in apollo.csv` | Enrich → probe → firstline in one go. Writes `<name>-ready.csv` |
+| `autopilot.py replies --in replies.csv` | Tags each reply, drafts answers, runs the free report for every "yes", writes ready-to-send emails into `business/data/outbox/<date>/`. Sends nothing |
+| `visibility.py snapshot --brand X --domain x.com [--pdf]` | The report: 10 generated questions × every engine with a key × 2 runs by default. `--questions file --runs 3 --yes` for paid plans; `--compare last/raw.json` for month-over-month; `--prepared-by "Agency"` for white-label |
+| `visibility.py questions --brand X --domain x.com --n 40 --out q.txt` | Just the buyer questions, to edit before a paid run |
+| `visibility.py enrich / probe / firstline` | The three lead steps on their own |
+
+**How "named" is decided:** the company's full name, its domain, or a competitor-list entry that normalizes to the same name ("Acme Software, Inc." = "Acme"). A shortened name on its own counts as "maybe": it isn't counted in reports and is never claimed in an email. The opening line is written only when the company was absent from **every** probe run, and every competitor it names appears in the saved `probe_answer`.
+
+**Cost guards:** `snapshot` stops above 200 paid calls, and `enrich`/`probe` above 300, unless you add `--yes`. Extraction calls are counted when the local model isn't running.
 
 Every run is saved to `business/runs/`, which is gitignored and never pushed.
 

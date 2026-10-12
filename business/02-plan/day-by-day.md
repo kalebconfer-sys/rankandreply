@@ -1,21 +1,30 @@
 # Day by day: days 1–30
 
-Each day lists **what you do** (marked 👤) and **what the AIs do** (marked 🤖), with rough times. When a step says "ask Claude," open Claude Code in this repo and paste the request. Claude reads these files and does it.
+Each day lists **what you do** (marked 👤) and **what the AIs do** (marked 🤖), with rough times. The times fit around shifts: nothing has to happen at a particular hour. When a step says "ask Claude," open Claude Code in this repo and paste the request. Claude reads these files and does it.
 
-**Where the commands run:** On your own computer. Get the code with `git clone https://github.com/kalebconfer-sys/rankandreply.git`, then `git checkout claude/ai-automated-business-plan-ptu9y7`, then `cd rankandreply/business/tools`. Everything that says `python ...` runs from that folder.
+**Where the commands run:** On your own computer.
+1. Get the code: `git clone https://github.com/kalebconfer-sys/rankandreply.git`
+2. Switch to this branch: `git checkout claude/ai-automated-business-plan-ptu9y7`
+3. Go to the tools folder: `cd rankandreply/business/tools`
+
+Everything that says `python ...` runs from that folder. You need Python 3.10 or newer.
+
+**If something breaks:** paste the whole error into Claude Code in this repo. If the same error happens twice, stop and fix it before moving on. Every later step depends on the tools working.
 
 ---
 
 ## Day 1: Accounts that take time to mature (about 2 hours)
 
-1. 👤 **Buy 5 sending domains** (Namecheap, Cloudflare or Porkbun; about $14 each). Suggested names: `getrankandreply.com`, `tryrankandreply.com`, `rankandreplyhq.com`, `rankandreplymail.com`, `userankandreply.com`. Take whichever are available.
-2. 👤 **Create 15 Google inboxes** through Zapmail (it sets up DNS automatically), or Google Workspace directly. Name every inbox after yourself: `kaleb@`, `kaleb.confer@`, `k.confer@`. Add a profile photo and the same signature to each.
-3. 👤 **Sign up for Instantly** (Growth plan), connect all 15 inboxes, and **turn warmup ON**.
+1. 👤 **Buy 10 sending domains** (Namecheap, Cloudflare or Porkbun; about $14 each). Suggested names are in [`cold-email.md`](../04-outreach/cold-email.md) §1. Take whichever are available.
+2. 👤 **Create 30 inboxes (3 per domain)** through a cold-email inbox provider such as Zapmail ($99 for 30, DNS set up automatically).
+   - **Never** add these domains to the Google account that runs rankandreply.com. A suspension there would take down your real email.
+   - Name every inbox after yourself: `kaleb@`, `kaleb.confer@`, `k.confer@`. Add a profile photo and the same signature to each.
+3. 👤 **Sign up for Instantly** (Hypergrowth plan; check the current limits on its pricing page). Connect all 30 inboxes and **turn warmup ON**.
    - Settings: open tracking **OFF**, link tracking **OFF**, unsubscribe header **ON**.
 4. 👤 Set each domain to redirect (301) to `https://rankandreply.com/ai-visibility/`.
-5. 🤖 If anything in steps 1–4 is confusing, ask Claude: *"Walk me through setting up DNS for getrankandreply.com in Zapmail, step by step."*
+5. 🤖 If anything in steps 1–4 is confusing, ask Claude: *"Walk me through setting up getrankandreply.com in Zapmail, step by step."*
 
-**Finish line:** Instantly shows 15 inboxes, all warming, all with SPF/DKIM/DMARC passing.
+**Finish line:** Instantly shows 30 inboxes, all warming, all with SPF/DKIM/DMARC passing.
 
 ## Day 2: The AI team (about 1 hour)
 
@@ -25,90 +34,101 @@ Each day lists **what you do** (marked 👤) and **what the AIs do** (marked �
    |---|---|---|
    | Claude | console.anthropic.com | Add $20 credit |
    | ChatGPT | platform.openai.com | Add $20 credit |
-   | Gemini | aistudio.google.com | Free tier |
+   | Gemini | aistudio.google.com | **Turn billing on.** The free tier may use your inputs to improve Google's products, and we'll be sending client data through it |
    | Perplexity | perplexity.ai/settings/api | Uses your Pro credit, or add $10 |
 
-2. 👤 Install Python 3.11+ and Ollama, then run `ollama pull llama3.1:8b`.
+2. 👤 Install Python 3.10+ and Ollama, then run `ollama pull llama3.1:8b`. If your computer has less than 16 GB of memory, skip Ollama and put `LOCAL_DISABLED=1` in `.env`; Gemini then does the bulk work.
 3. 👤 In `business/tools`, run `pip install -r requirements.txt`, then `playwright install chromium`.
 4. 👤 Copy `.env.example` to `.env` and paste in the keys.
-5. 🤖 Run `python council.py status`. Every line should say `ready`.
-6. 🤖 First council test: `python council.py ask "In one sentence each: what's the biggest risk in business/01-research/market-research.md?" --file ../01-research/market-research.md`
+5. 🤖 Run `python council.py status`. Each AI you set up should say `ready`.
+6. 🤖 First council test:
+   ```bash
+   python council.py ask "In one sentence each: what's the biggest risk in this plan?" --file ../01-research/market-research.md
+   ```
 
-**Finish line:** five AIs answering.
+**Finish line:** the AIs answer.
 
-## Day 3: Prove the engine on real companies (about 1 hour; about $20–40 in API calls)
+## Day 3: Prove the tools on real APIs (about 1 hour; about $10–20 in API calls)
 
-1. 🤖 Ask Claude: *"Pick 5 real B2B software companies with 10–200 employees and 5 managed IT providers in Pennsylvania or Ohio that would be ideal customers. Give me brand, domain and region."*
+1. 🤖 Ask Claude: *"Pick 3 real B2B software companies with 10–200 employees that would be ideal customers. Give me brand and domain."*
 2. 🤖 For each one, run:
    ```bash
-   python visibility.py snapshot --brand "Company" --domain company.com --n 20 --pdf
+   python visibility.py snapshot --brand "Company" --domain company.com --pdf
    ```
-   Add `--region "Pittsburgh, PA"` for the IT providers.
-3. 👤 Open 3 of the PDFs. Do they make sense? Would *you* reply to an email that opened with that finding?
+   (Default: 10 questions, each asked twice on every engine.)
+3. 👤 Open the 3 PDFs. Do the numbers make sense? Spot-check 3 answers in `raw.json` against the report.
 4. 🤖 Note the real cost per report from each AI provider's billing page.
 
-**Finish line:** 10 real reports, and you know what one costs.
+**Finish line:** 3 good PDFs. **If any step errors twice, stop and fix it with Claude before day 4.** Days 5–15 all depend on this.
 
-## Day 4: Money and the legal basics (about 1 hour)
+## Day 4: Money and the legal basics (about 1.5 hours)
 
-1. 👤 **Stripe:** create an account for RevivaCatch LLC. Create two Payment Links:
-   - "AI Visibility Fix Plan": $490, one-time.
-   - "AI Visibility Retainer": $1,500/month, recurring.
-   - On both: after payment, redirect to your onboarding form (step 3).
+1. 👤 **Stripe:** create an account for RevivaCatch LLC. Create three Payment Links, each redirecting to your onboarding form after payment (step 4):
+
+   | Payment Link | Price |
+   |---|---|
+   | AI Visibility Fix Plan | $490 one-time |
+   | AI Visibility Retainer | $1,500/month recurring |
+   | AI Visibility Sprint (3 months) | $3,900 one-time |
+
 2. 👤 **Virtual mailbox** (iPostal1 or Anytime Mailbox, about $10–15/month) for the legal email footer.
-3. 👤 **Onboarding form:** build it in Tally from [`../03-offer/onboarding-form.md`](../03-offer/onboarding-form.md) (about 20 minutes).
-4. 🤖 Ask Claude: *"Swap the Stripe links into ai-visibility/index.html and the email templates: Fix Plan = <link>, Retainer = <link>."*
+3. 👤 **Fictitious name:** check that "Rank and Reply" is registered with Pennsylvania as a fictitious name of RevivaCatch LLC. If it isn't, file it (PA Department of State, about $70).
+4. 👤 **Onboarding form:** build it in Tally from [`../03-offer/onboarding-form.md`](../03-offer/onboarding-form.md) (about 20 minutes).
+5. 🤖 Ask Claude: *"Swap the Stripe links into ai-visibility/index.html, and put them in business/tools/.env as STRIPE_FIXPLAN_LINK and STRIPE_RETAINER_LINK: Fix Plan = <link>, Retainer = <link>, Sprint = <link>."*
+6. 👤 Read `ai-visibility/privacy.html` and `terms.html`. They're drafts; have a lawyer look at them when you can.
 
 **Finish line:** a test purchase in Stripe test mode goes all the way to the onboarding form.
 
-## Day 5: Council review of the hook (about 45 minutes)
+## Day 5: More proof, then a council review of the hook (about 1 hour; about $20–40)
 
-1. 🤖 Ask Claude: *"Summarize the 10 reports in business/data/reports into business/data/ten-reports.md: brand, rate, top 3 competitors, headline."* Then run:
+1. 🤖 Run 7 more snapshots: 2 more software companies and 5 managed IT providers in Pennsylvania or Ohio. For the IT providers, add `--region "Pittsburgh, PA"`.
+2. 🤖 Ask Claude: *"Summarize the 10 reports in business/data/reports into business/data/ten-reports.md: brand, rate, top 3 competitors, headline."*
+3. 🤖 Run:
    ```bash
-   python council.py debate "Based on these 10 snapshot results, is our cold email hook (we asked ChatGPT your buyers' question; here's who it named instead) true, strong, and safe? What would make a busy founder reply? What would make them mark it as spam?" --file ../data/ten-reports.md
+   python council.py debate "Based on these 10 snapshot results, is our cold email hook (we asked ChatGPT your buyers' question; here's who it named instead) true, strong, and safe? What would make a busy founder reply? What would make them mark it as spam?" --file ../data/ten-reports.md --file ../04-outreach/cold-email.md
    ```
-2. 👤 Read the decision. Ask Claude to apply any copy changes it recommends.
-3. 🤖 From the 10 reports, Claude writes **one true, citable line** for the emails. Example: "Of 10 software companies I checked this month, the median was named in 15% of answers." Only use it if the numbers support it.
+4. 👤 Read the decision. Ask Claude to apply any copy changes it recommends.
+5. 🤖 Only if the numbers support it, Claude writes **one true line** for the emails that describes the sample honestly, for example: "Of 5 B2B software companies I checked this month, 4 weren't named in most answers."
 
 ## Day 6: Marketplaces live (about 1.5 hours)
 
-1. 👤 **Upwork:** paste the profile from [`../04-outreach/marketplaces.md`](../04-outreach/marketplaces.md). Create the Catalog listing (3 tiers). Use one of your 10 reports, anonymized, as the portfolio sample.
+1. 👤 **Upwork:** paste the profile from [`../04-outreach/marketplaces.md`](../04-outreach/marketplaces.md). Create the Catalog listing (3 tiers). Use one of your 10 reports, anonymized, as the portfolio sample. Set up the saved searches with email alerts.
 2. 👤 **Fiverr:** create the gig (3 packages, requirements, description).
-3. 👤 **Contra:** profile plus 2 services at full price.
+3. 👤 **Contra:** profile plus 2 services at direct prices.
 
-## Day 7: First proposals (about 45 minutes)
+## Day 7: Site live (about 30 minutes)
 
-1. 🤖 **Scout:**
-   ```bash
-   python council.py research "Upwork job posts from the last 7 days asking for GEO, AEO, AI search visibility, ChatGPT visibility or LLM SEO. List title, URL, budget, client industry, and whether a company website is named."
-   ```
-2. 🤖 For each good post, run the probe on the client's site if it's named. Then draft the proposal: put the post text in a CSV column `post` and the probe result in `probe`, and run:
-   ```bash
-   python council.py bulk --in posts.csv --prompt prompts/upwork_proposal.txt --out proposals.csv --column proposal
-   ```
-3. 👤 Read each proposal, edit, and **submit by hand**. Target: 10.
-4. 👤 Merge the branch on GitHub (or ask Claude to open a pull request and merge it) so `/ai-visibility/` goes live.
+1. 👤 Merge the branch on GitHub (or ask Claude to open a pull request for you to merge) so `/ai-visibility/` goes live.
+2. 👤 Open rankandreply.com/ai-visibility/ on your phone and click every button.
 
 ## Day 8: First lead batch (about 1 hour)
 
-1. 👤 **Apollo:** run the Segment A search (filters in [`cold-email.md`](../04-outreach/cold-email.md) §2). Export 300 contacts.
-2. 👤 **MillionVerifier:** upload, keep only "good" addresses, download.
+1. 👤 **Apollo:** run the Segment A search (filters in [`cold-email.md`](../04-outreach/cold-email.md) §2, United States only). Export 500 contacts.
+2. 👤 **MillionVerifier:** upload, keep only "good" addresses, download to `business/data/leads/a-raw.csv`.
 3. 🤖 Run:
    ```bash
-   python visibility.py enrich --in ../data/leads/a-raw.csv --out ../data/leads/a1.csv
-   python visibility.py probe --in ../data/leads/a1.csv --out ../data/leads/a2.csv
-   python visibility.py firstline --in ../data/leads/a2.csv --out ../data/leads/a-ready.csv
+   python autopilot.py leads --in ../data/leads/a-raw.csv
    ```
-4. 👤 Read 20 first lines. Delete anything odd.
+   This runs enrich, probe (each question asked twice) and firstline. Add `--yes` when it says the batch is over 300 paid calls.
+4. 👤 Open `a-raw-ready.csv`. For 20 rows, read `first_line` next to `probe_answer` (the AI's actual answer). Delete any row where they don't match.
 
 ## Day 9: Second lead batch (about 1 hour)
 
-Same as day 8, for **Segment B** (services, with `--region`). 300 contacts.
+Same as day 8, for **Segment B** (services, United States only, with `--region` for a state). 500 contacts.
 
 ## Day 10: Sequences loaded (about 1 hour)
 
-1. 👤 In Instantly, create **Campaign A1** (Segment A, Sequence 1), **A2** (Segment A, Sequence 2) and **B1/B2** (Segment B). Paste the copy from [`cold-email.md`](../04-outreach/cold-email.md) §3 and add the footer.
-2. 👤 Upload the ready CSVs. Map the variables. **Schedule the start for day 15.** Sending window 8am–5pm in the recipient's time zone, weekdays only.
+1. 👤 In Instantly, create 4 campaigns:
+
+   | Campaign | Segment | Sequence |
+   |---|---|---|
+   | A1 | A (software) | Sequence 1 |
+   | A2 | A (software) | Sequence 2 |
+   | B1 | B (services) | Sequence 1 |
+   | B2 | B (services) | Sequence 2 |
+
+   Paste the copy from [`cold-email.md`](../04-outreach/cold-email.md) §3, including the footer with the "business solicitation" line.
+2. 👤 Upload the ready CSVs and map the variables. **Schedule the start for day 15.** Sending window 8am–5pm in the recipient's time zone, weekdays only.
 3. 🤖 Critic review:
    ```bash
    python council.py ask "You are a busy VP of Marketing. Here's a cold email. What makes you delete it? What makes you reply? Rewrite the weakest sentence." --ai chatgpt --file ../04-outreach/cold-email.md
@@ -121,47 +141,51 @@ Same as day 8, for **Segment B** (services, with `--region`). 300 contacts.
 
 ## Day 12: Reply process dry run (about 30 minutes)
 
-1. 🤖 Ask Claude: *"Make a fake replies CSV with 8 realistic replies: 2 yes, 1 price, 1 question, 1 not now, 1 has agency, 1 unsubscribe, 1 out of office."*
-2. 🤖 Run `classify_reply` and then `draft_reply` on it with `council.py bulk` (commands in [`cold-email.md`](../04-outreach/cold-email.md) §4).
-3. 👤 Check that the labels are right and the drafts are sendable. Ask Claude to tune the prompts if not.
+1. 🤖 Ask Claude: *"Make a fake replies CSV in business/data/replies/test.csv with columns email, first_name, company, website, reply_text and 8 realistic replies: 2 yes, 1 price, 1 question, 1 not now, 1 has agency, 1 unsubscribe, 1 out of office. Use real company websites for the yes rows."*
+2. 🤖 Run `python autopilot.py replies --in ../data/replies/test.csv`.
+3. 👤 Read the outbox. Are the labels right and the drafts sendable? Ask Claude to tune the prompts if not.
 
-## Day 13: Upwork and Fiverr (about 45 minutes)
-
-15 more proposals over days 13–14. Deliver any orders that came in (`snapshot --pdf`, QA, send).
-
-## Day 14: Pre-flight (about 30 minutes)
+## Days 13–14: Pre-flight (about 30 minutes)
 
 - [ ] Warmup health in Instantly: 95%+ landing in the inbox
-- [ ] Campaigns scheduled for tomorrow, at 5 emails per inbox per day
-- [ ] Footer with mailbox address and opt-out line on every step
+- [ ] Campaigns scheduled for day 15, at 5 emails per inbox per day
+- [ ] Footer with mailbox address, "business solicitation" line and opt-out line on every step
 - [ ] Suppression list created (and shared across campaigns)
-- [ ] Stripe links live on the page and in template A
+- [ ] Stripe links live on the page and in `.env`
 - [ ] Onboarding form linked from Stripe
+- [ ] Up to 5 Upwork proposals sent on fixed-price posts from your alerts (drafts: `council.py bulk ... --prompt prompts/upwork_proposal.txt --ai claude`)
 
 ---
 
-## Days 15–30: The daily routine (about 1.5 hours a day)
+## Days 15–30: The daily routine (about 1.5 hours a day, any time)
 
-**Every morning (30–45 min)**
-1. 👤 Export new replies from Instantly to `../data/replies/today.csv`. The columns should be `first_name`, `company`, `email`, `reply_text`.
-2. 🤖 Classify and draft:
+**Once a day (30–45 min): replies**
+1. 👤 Export new replies from Instantly to `../data/replies/<date>.csv`. The columns should be `email`, `first_name`, `company`, `website`, `reply_text`.
+2. 🤖 Run:
    ```bash
-   python council.py bulk --in ../data/replies/today.csv --prompt prompts/classify_reply.txt --out ../data/replies/today-tagged.csv --column label
-   python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/draft_reply.txt --out ../data/replies/today-drafts.csv --column draft
+   python autopilot.py replies --in ../data/replies/2026-10-28.csv
    ```
-3. 🤖 For every `yes`: `python visibility.py snapshot --brand "..." --domain ... --pdf`
-4. 👤 Skim each PDF (2 minutes), then send template A with the PDF attached. Send the other drafts. Add every `no` to the suppression list.
-5. 👤 Log each report and each sale in your pipeline sheet: copy `business/02-plan/templates/pipeline.csv` to `business/data/pipeline.csv` once and fill in that copy. `business/data/` is never pushed, which matters because this repo is public and real contacts must not go in it.
+   It tags each reply, drafts answers with Claude, runs the report for every "yes", and writes ready-to-send emails to `business/data/outbox/<date>/`.
+3. 👤 Open each outbox file:
+   - Skim the PDF for every "yes" (2 minutes).
+   - Send the email from the inbox they replied to.
+   - Read any `unsorted` reply yourself.
+   - Add every `no` to Instantly's blocklist.
+4. 👤 Log each report and each sale in your pipeline sheet. Copy `business/02-plan/templates/pipeline.csv` to `business/data/pipeline.csv` once, and fill in that copy. `business/data/` is never pushed, which matters because this repo is public and real contacts must not go in it.
 
-**Once a day (20 min):** a new lead batch (Apollo → verify → enrich → probe → firstline → upload), so the queue always has 3 days of leads.
+**Once a day (20 min): leads.** Run `autopilot.py leads` on a new verified Apollo export, then check 20 rows. At full volume each sending day uses about 200 new leads, so keep 3 days queued.
 
-**Once a day (20 min):** Upwork. The Scout finds posts, the Chair drafts, you submit 3.
+**Up to 5 times a week (10 min each): Upwork.** When an alert comes in, Claude drafts the proposal; you edit and submit.
 
 **Ramp:**
-- Day 15: 5 emails per inbox per day.
-- Day 19: 10.
-- Day 23: 15.
-- **Pause any inbox whose bounce rate goes over 2%.**
+
+| From day | Emails per inbox per day | Total per day |
+|---|---|---|
+| 15 | 5 | 150 |
+| 19 | 10 | 300 |
+| 23 | 15 | 450 |
+
+Also on **day 15**, buy 5 more domains and 15 inboxes and start warming them. **Pause any inbox whose bounce rate goes over 2%.**
 
 **Mondays (days 15, 22, 29): council review (45 min)**
 ```bash
@@ -171,4 +195,4 @@ python council.py debate "Here is this week's scoreboard. Which funnel step is w
 
 **Fridays:** fill in the scoreboard row for the week.
 
-**Day 30:** the decision. Look at "yes" rate × report-to-paid rate for Segment A vs B. The winner gets 90% of volume. Then start [Phase 3](90-day-plan.md#phase-3-double-down-and-systematize-days-4690): buy 5 more domains, start warming them, and build the agency list.
+**Day 30:** the decision. Look at "yes" rate × report-to-paid rate for Segment A vs B. The winner gets 90% of volume. Then start [Phase 3](90-day-plan.md#phase-3-double-down-and-systematize-days-4690).

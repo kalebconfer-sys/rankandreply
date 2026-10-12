@@ -69,7 +69,7 @@ Footer and compliance: the same as [`cold-email.md`](cold-email.md) §3 and §5.
 
 ## After a "yes"
 
-1. Run the full 20-question snapshot with `--prepared-by "{{agency}}"` and send the PDF within 1 business day.
+1. Run the snapshot (10 questions, each asked twice on every engine) with `--prepared-by "{{agency}}"`, and send the PDF within 2 business days.
 2. Then send the partner page: pricing, process, what they get each month and what we need from them. Write it as a Google Doc first. Make it a web page later if the channel works.
 3. **Onboarding is async:** the agency fills in the same onboarding form per end client and adds "agency" + "white-label name" fields.
 

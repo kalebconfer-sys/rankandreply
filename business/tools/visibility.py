@@ -808,7 +808,7 @@ def first_line(row: dict) -> tuple[str, str]:
     named = [n for n in (row.get(f"named_{i}", "") for i in (1, 2, 3)) if n]
     if row.get("mentioned") == "no" and len(named) >= 2:
         listed = ", ".join(named[:-1]) + f" and {named[-1]}" if len(named) > 2 else " and ".join(named)
-        return "not_named", f'I asked {engine} "{q}?" It recommended {listed}. {company} didn\'t come up.'
+        return "not_named", f'I asked {engine} "{q}?" It named {listed}. {company} didn\'t come up.'
     if row.get("mentioned") == "yes":
         also = f", alongside {' and '.join(named[:2])}" if named else ""
         return "named", f'I asked {engine} "{q}?" {company} made the list{also}.'
