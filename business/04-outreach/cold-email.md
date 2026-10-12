@@ -2,30 +2,35 @@
 
 > **Why it didn't work before, and why it will now.** Cold email works for everyone else because they don't send it from their real Gmail or their main domain. Since November 2025, Gmail **rejects** mail that isn't set up properly, where before it only sent it to spam. Most beginners also send one generic email with tracking links to an unverified list. Every one of those mistakes is fixed below. Evidence and sources: [`../01-research/sources/cold-email.md`](../01-research/sources/cold-email.md).
 
-## 1. The setup (do once; about $200/month)
+## 1. The setup (do once; about $330–360/month)
 
 | Piece | What to buy | Cost | Notes |
 |---|---|---|---|
-| Sending domains | **5** lookalike .com domains, e.g. `getrankandreply.com`, `tryrankandreply.com`, `rankandreplyhq.com`, `rankandreplymail.com`, `userankandreply.com` (check availability) | about $70/yr total | **Never send cold email from rankandreply.com or your Gmail.** Point each one (301 redirect) to rankandreply.com/ai-visibility/ |
-| Inboxes | **3 per domain = 15 inboxes**, Google Workspace via Zapmail ($39 for 10, plus 5 more) or Google Workspace directly ($7–8.40 each) | about $55–125/mo | Real name on every inbox: kaleb@, kaleb.confer@, k.confer@. **No fake personas** |
+| Sending domains | **10** lookalike .com domains, e.g. `getrankandreply.com`, `tryrankandreply.com`, `rankandreplyhq.com`, `rankandreplymail.com`, `userankandreply.com`, `rankandreplyteam.com`, `hellorankandreply.com`, `rankandreplyai.com`, `meetrankandreply.com`, `rankandreplyco.com` (check availability) | about $140/yr total | **Never send cold email from rankandreply.com or your Gmail.** Point each one (301 redirect) to rankandreply.com/ai-visibility/ |
+| Inboxes | **3 per domain = 30 inboxes**, through a cold-email inbox provider such as Zapmail ($99 for 30 Google mailboxes) or Mailforge (about $3/mailbox). **Not** in the Google account that runs rankandreply.com | about $90–100/mo | Real name on every inbox: kaleb@, kaleb.confer@, k.confer@. **No fake personas** |
 | DNS | SPF, DKIM, DMARC (`p=none` with reporting) on every domain | $0 | Zapmail does it automatically. Check each domain at mail-tester.com (aim for 10/10) |
-| Sending tool | **Instantly** Growth | $47/mo | Unlimited inboxes and warmup. **Turn open tracking and link tracking OFF.** Turn the one-click unsubscribe header ON |
-| Leads | **Apollo** Basic | $49–65/mo | 2,500 credits/mo is enough for month 1 |
+| Sending tool | **Instantly** Hypergrowth | $97/mo | Growth ($47) is reported to cap at about 1,000 uploaded contacts and 5,000 sends a month, which is too small from week 3. Check the current limits on Instantly's pricing page before buying. Unlimited inboxes and warmup. **Turn open tracking and link tracking OFF.** Turn the one-click unsubscribe header ON |
+| Leads | **Apollo** Professional | $79–99/mo | About 4,000 credits/mo, roughly one month of first touches at full volume |
 | Verification | **MillionVerifier** | about $37 per 10k | Remove invalid, catch-all and risky addresses. Target under 2% bounces |
 | Mailing address | Virtual mailbox (iPostal1, Anytime Mailbox) or a USPS P.O. box | $10–15/mo | Required by law in every email footer. Keeps your home address private |
 
-**Warmup:** Connect all 15 inboxes to Instantly on day 1 with warmup on. **No cold sends until day 15.**
+> **Google's rules, plainly.** Google Workspace's acceptable-use and program policies prohibit unsolicited bulk email. Low-volume, individually relevant B2B outreach from dedicated domains is common practice, but **expect some inboxes to be suspended**, and plan for it:
+> - Sending domains and inboxes **never** live in the Google account that runs rankandreply.com. A suspension must not be able to take down your real business email.
+> - Once you pass 30 inboxes, split them across two providers (for example Google through Zapmail and Microsoft through Mailforge).
+> - Keep about $30/month in the budget for replacing suspended inboxes.
+
+**Warmup:** Connect all 30 inboxes to Instantly on day 1 with warmup on. **No cold sends until day 15.**
 
 **Ramp after warmup:**
 
 | Days | Cold emails per inbox per day | Total per day |
 |---|---|---|
-| 15–18 | 5 | 75 |
-| 19–22 | 10 | 150 |
-| 23–30 | 15 | 225 |
-| From day 31 | 20 max | 300 |
+| 15–18 | 5 | 150 |
+| 19–22 | 10 | 300 |
+| 23–30 | 15 | 450 |
+| From day 31 | 20 max | 600 |
 
-Add more domains (5 at a time, warmed 14 days) to grow past 300 a day.
+**The daily cap includes follow-ups.** Each lead gets 3 emails, so 600 sends a day ≈ 200 new leads a day ≈ **4,200 new leads a month**. Over days 15–30 the ramp sends about 3,900 emails, about 2,000 of them first touches. Add more domains (5 at a time, warmed 14 days) to grow past 600 a day.
 
 **Stop rules (Instantly can enforce these):**
 - Bounces above **2%** on any inbox: pause it.
@@ -41,12 +46,12 @@ Apollo search ─► export CSV ─► MillionVerifier ─► visibility.py enri
 **Apollo filters for Segment A (software):**
 - Industry: Computer Software / Internet / IT Services.
 - Employees: 10–200.
-- Locations: United States, Canada (see the CASL rule below), United Kingdom.
+- Locations: **United States only** for the first 90 days. Canada and the UK need extra consent steps; revisit after day 90.
 - Titles:
   - under 50 employees: Founder, Co-founder, CEO.
   - 50+ employees: VP Marketing, Head of Marketing, Director of Marketing, Head of Growth, Demand Generation.
 
-**Apollo filters for Segment B (services):** Industry: Information Technology & Services, Computer & Network Security, Marketing & Advertising (B2B), Management Consulting. Employees: 5–100. Titles: Owner, Founder, CEO, President, Marketing Manager. Add the city or state to `--region`.
+**Apollo filters for Segment B (services, United States only):** Industry: Information Technology & Services, Computer & Network Security, Marketing & Advertising (B2B), Management Consulting. Employees: 5–100. Titles: Owner, Founder, CEO, President, Marketing Manager. Add the city or state to `--region`.
 
 ```bash
 cd business/tools
@@ -79,9 +84,9 @@ Subject B: `{{company}} and AI search`
 >
 > {{first_line}}
 >
-> About half of software buyers now start their shortlist in a chatbot (G2, 2026), so that answer is quietly picking vendors for you.
+> In G2's 2026 survey of 1,076 software buyers, about half said they now start their research in an AI chatbot, so answers like that are quietly shaping shortlists.
 >
-> I can run the 20 questions your buyers most likely ask across ChatGPT, Gemini, Perplexity and Claude, and send you who gets named, who doesn't, and the five fixes that matter most. Free, no call.
+> I can ask ChatGPT, Gemini, Perplexity and Claude the 10 questions your buyers most likely ask (twice each, since answers vary) and send you who gets named, who doesn't, and the five fixes that matter most. Free, no call.
 >
 > Want it?
 >
@@ -94,7 +99,7 @@ Subject B: `{{company}} and AI search`
 
 > {{first_name}}, one more detail. The assistants lean heavily on review sites, "best of" lists and pages that answer comparison questions directly. That's why the same few names keep coming up. It's a content and listings gap, not an ad-spend one.
 >
-> Happy to send the 20-question report for {{company}}. Just reply "send it."
+> Happy to send the report for {{company}}. Just reply "send it."
 >
 > Kaleb
 
@@ -113,7 +118,7 @@ Subject: `{{company}} on ChatGPT`
 >
 > {{first_line}} Good sign, but that's one question on one assistant.
 >
-> I can run the 20 questions buyers ask at the shortlist stage across ChatGPT, Gemini, Perplexity and Claude and show you where {{company}} holds up and where a competitor takes the spot. Free, no call.
+> I can ask ChatGPT, Gemini, Perplexity and Claude the 10 questions buyers ask at the shortlist stage (twice each) and show you where {{company}} holds up and where a competitor takes the spot. Free, no call.
 >
 > Want it?
 >
@@ -125,22 +130,32 @@ Emails 2 and 3: the same as Sequence 1.
 ### The footer (on every email, set once in Instantly)
 
 ```
-Rank and Reply · RevivaCatch LLC · [mailbox address], Erie, PA [ZIP]
-Not relevant? Reply "no" and I won't email again.
+Rank and Reply (RevivaCatch LLC) · [mailbox address], Erie, PA [ZIP]
+This is a business solicitation. Not relevant? Reply "no" and I won't email again.
 ```
+
+CAN-SPAM requires commercial email to identify itself as an advertisement or solicitation. The second line does that plainly.
 
 ## 4. Replies: what happens to each one
 
-Export replies from Instantly each morning (or use its webhook later). Then run:
+Export replies from Instantly once a day, at any time that fits your shifts. Use columns `email`, `first_name`, `company`, `website`, `reply_text`. Then run one command:
+
+```bash
+python autopilot.py replies --in ../data/replies/2026-10-28.csv
+```
+
+It tags every reply with the local model, drafts answers with Claude, runs the report for every "yes", and writes ready-to-send emails into `business/data/outbox/<date>/`. Nothing is sent until you send it.
+
+The manual equivalent, if you prefer:
 
 ```bash
 python council.py bulk --in ../data/replies/today.csv --prompt prompts/classify_reply.txt --out ../data/replies/today-tagged.csv --column label
-python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/draft_reply.txt --out ../data/replies/today-drafts.csv --column draft
+python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/draft_reply.txt --out ../data/replies/today-drafts.csv --column draft --ai claude
 ```
 
 | Label | What happens | Who |
 |---|---|---|
-| `yes` | Run the snapshot. Send the report within 1 business day using template A | AI runs it; you skim the PDF and press send |
+| `yes` | Run the snapshot. Send the report within 2 business days using template A | AI runs it; you skim the PDF and press send |
 | `question` | Answer from the FAQ (template B) | AI drafts; you send |
 | `price` | Template C | AI drafts; you send |
 | `not_now` | Template D; snooze 90 days | AI |
@@ -161,12 +176,14 @@ python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/dr
 > - The biggest gap: {{fix_1_title}}.
 >
 > If you'd like to fix it yourself, the five fixes at the end are where to start. If you'd rather we did it:
-> - **Fix Plan, $490 once:** the full 480-answer audit, the sites the engines cite, a 30-day roadmap and two pages written for you, in 5 business days. {{stripe_fixplan_link}}
+> - **Fix Plan, $490 once:** the full 480-answer audit, the sites the engines cite, a 30-day roadmap and two pages written for you, in 5 business days. Credited to your first Retainer month if you continue within 30 days. {{stripe_fixplan_link}}
 > - **Retainer, $1,500/month,** month-to-month. {{stripe_retainer_link}}
 >
 > Everything is at rankandreply.com/ai-visibility. Questions? Just reply. No call needed.
 >
 > Kaleb
+
+**Template A is for cold-email leads only.** Never put a Stripe link, website or email address in anything sent through Upwork or Fiverr.
 
 **Follow-ups after the report:**
 - **Day 3:** "Did the report make sense? One thing worth doing this week, even if we never work together: {{fix_1_how_short}}."
@@ -174,7 +191,7 @@ python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/dr
 
 ### Template B: "How did you do this?" / "Who are you?"
 
-> Fair question. I put each question to ChatGPT, Gemini, Perplexity and Claude through their official APIs, with web search on, and count who gets named. It's the same question your buyers type. I'm Kaleb, and I run Rank and Reply out of Erie, PA. Happy to send the full report so you can see the method. It's printed on the last page.
+> Fair question. I put each question to ChatGPT, Gemini, Perplexity and Claude through their official APIs, with web search on, more than once each, and count who gets named. It's the same question your buyers type. I'm Kaleb, and I run Rank and Reply out of Erie, PA. Happy to send the full report so you can see the method. It's printed on the last page.
 
 ### Template C: price
 
@@ -186,7 +203,7 @@ python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/dr
 
 ### Template E: "We already have an SEO agency"
 
-> Makes sense. Worth asking whether they measure AI answers. Most SEO reporting doesn't. Happy to send the report so you can hand it to them. No strings.
+> Makes sense. Worth asking whether they measure what AI assistants say about you. It's a different measurement from rankings. Happy to send the report so you can hand it to them. No strings.
 
 ### Template F: they want a call
 
@@ -197,9 +214,9 @@ python council.py bulk --in ../data/replies/today-tagged.csv --prompt prompts/dr
 - [ ] Real name and real company in From and the signature.
 - [ ] Subject line describes the email. No fake "Re:" or "Fwd:".
 - [ ] Physical mailing address in the footer.
+- [ ] The footer identifies the email as a business solicitation.
 - [ ] Opt-out line in the footer and the one-click unsubscribe header on. Opt-outs honored the same day (the law allows 10 business days; we do better).
 - [ ] **One suppression list** shared by every inbox and every campaign. Anyone who says no is never emailed again, from any domain.
-- [ ] **Canada:** only email addresses published on the company's own site, where the email is relevant to that person's role. Screenshot the page with the date and keep it (CASL burden of proof). If unsure, skip Canada.
-- [ ] **UK:** limited companies only. Skip sole traders.
-- [ ] **No EU** (Germany and Austria require prior consent even for business email).
+- [ ] **United States only** for the first 90 days. After that, Canada needs CASL evidence for each address (published on the company's site, relevant to the person's role, screenshot kept), and the UK needs limited companies only plus a privacy notice. No EU: Germany and Austria require prior consent even for business email.
+- [ ] Sending inboxes live outside the Google account that runs rankandreply.com.
 - [ ] No purchased lists of personal (non-work) emails. No scraping LinkedIn.

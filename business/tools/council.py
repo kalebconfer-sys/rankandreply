@@ -7,16 +7,16 @@ rest, so it works with one AI on day one and all five once the keys are in.
 
     python council.py status
     python council.py ask      "Which of these three offers would you buy?"
-    python council.py debate   "Pick our niche from business/01-research/market-research.md" --file business/01-research/market-research.md
-    python council.py research "Upwork jobs posted this week asking for n8n lead-gen automations, with budgets"
-    python council.py bulk --in leads.csv --prompt prompts/first_line.txt --out leads_out.csv --column first_line
+    python council.py debate   "Pick our niche" --file ../01-research/market-research.md --file ../03-offer/offer.md
+    python council.py research "Upwork jobs posted this week asking for GEO or AEO work, with budgets"
+    python council.py bulk --in replies.csv --prompt prompts/classify_reply.txt --out tagged.csv --column label
 
 Roles (see business/05-ai-team/roles.md):
     perplexity  Scout    live web research with citations (falls back to Claude + web search)
     claude      Chair    final decisions, writing, code; synthesizes the debate
     chatgpt     Critic   red-teams plans and copy, plays the skeptical buyer
     gemini      Analyst  cheap long-context work: big CSVs, many job posts at once
-    local       Worker   free unlimited bulk: scoring leads, first lines, dedupe
+    local       Worker   free unlimited bulk: scoring leads, tagging replies
 
 Keys go in business/tools/.env (copy .env.example). Nothing here sends email or
 posts anywhere: it only reads and writes local files.
@@ -28,11 +28,17 @@ import argparse
 import concurrent.futures as cf
 import csv
 import datetime as dt
+import json
 import os
+import string
 import sys
-import time
 from collections import defaultdict
 from pathlib import Path
+
+# Windows consoles default to cp1252; never crash on an em dash or arrow.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE.parent / "runs"
@@ -42,7 +48,7 @@ def load_env(path: Path) -> None:
     """Minimal .env loader so the only dependencies are the two SDKs."""
     if not path.exists():
         return
-    for line in path.read_text().splitlines():
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -81,6 +87,10 @@ class Unavailable(Exception):
     pass
 
 
+class Declined(Exception):
+    """Claude's safety classifier declined and the fallback model did too."""
+
+
 # --------------------------------------------------------------------------- providers
 
 def _claude_client():
@@ -91,8 +101,9 @@ def _claude_client():
 
 
 def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = "high",
-                schema: dict | None = None) -> str:
-    """schema: a JSON Schema; when given, the reply is guaranteed to be valid JSON text."""
+                schema: dict | None = None, sources: list | None = None) -> str:
+    """schema: a JSON Schema; when given, the reply is guaranteed to be valid JSON text.
+    sources: pass a list to collect the URLs web search returned."""
     client = _claude_client()
     output_config = {"effort": effort}
     if schema:
@@ -115,17 +126,22 @@ def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = 
         resp = client.beta.messages.create(**kwargs)
         if resp.stop_reason == "refusal":
             detail = resp.stop_details.explanation if resp.stop_details else ""
-            return f"[Claude declined this request. {detail}]"
+            raise Declined(detail or "declined")
         for block in resp.content:
             if block.type == "text":
                 text_parts.append(block.text)
+            elif block.type == "web_search_tool_result" and sources is not None:
+                results = getattr(block, "content", None)
+                if isinstance(results, list):  # an error comes back as a single object
+                    sources.extend(r.url for r in results if getattr(r, "url", None))
         if resp.stop_reason != "pause_turn":
             break
         kwargs["messages"] = kwargs["messages"] + [{"role": "assistant", "content": resp.content}]
     return "".join(text_parts).strip()
 
 
-def _openai_compatible(base_url: str | None, key_env: str | None, model: str, prompt: str, system: str) -> tuple[str, object]:
+def _openai_compatible(base_url: str | None, key_env: str | None, model: str, prompt: str, system: str,
+                       response_format: dict | None = None) -> tuple[str, object]:
     from openai import OpenAI
     if key_env and not os.getenv(key_env):
         raise Unavailable(f"{key_env} not set")
@@ -135,22 +151,29 @@ def _openai_compatible(base_url: str | None, key_env: str | None, model: str, pr
         timeout=600,
     )
     messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
-    resp = client.chat.completions.create(model=model, messages=messages)
+    extra = {"response_format": response_format} if response_format else {}
+    resp = client.chat.completions.create(model=model, messages=messages, **extra)
     return (resp.choices[0].message.content or "").strip(), resp
 
 
+ENDPOINTS = {  # name -> (base_url, key env var, model)
+    "chatgpt": (None, "OPENAI_API_KEY", OPENAI_MODEL),
+    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY", GEMINI_MODEL),
+    "perplexity": ("https://api.perplexity.ai", "PERPLEXITY_API_KEY", PERPLEXITY_MODEL),
+    "local": (LOCAL_URL, None, LOCAL_MODEL),
+}
+
+
 def call_chatgpt(prompt: str, system: str = "") -> str:
-    return _openai_compatible(None, "OPENAI_API_KEY", OPENAI_MODEL, prompt, system)[0]
+    return _openai_compatible(*ENDPOINTS["chatgpt"], prompt, system)[0]
 
 
 def call_gemini(prompt: str, system: str = "") -> str:
-    return _openai_compatible(
-        "https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY", GEMINI_MODEL, prompt, system
-    )[0]
+    return _openai_compatible(*ENDPOINTS["gemini"], prompt, system)[0]
 
 
 def call_perplexity(prompt: str, system: str = "") -> str:
-    text, resp = _openai_compatible("https://api.perplexity.ai", "PERPLEXITY_API_KEY", PERPLEXITY_MODEL, prompt, system)
+    text, resp = _openai_compatible(*ENDPOINTS["perplexity"], prompt, system)
     extra = getattr(resp, "model_extra", None) or {}
     urls = extra.get("citations") or [r.get("url") for r in extra.get("search_results") or [] if r.get("url")]
     if urls:
@@ -161,7 +184,7 @@ def call_perplexity(prompt: str, system: str = "") -> str:
 def call_local(prompt: str, system: str = "") -> str:
     import openai
     try:
-        return _openai_compatible(LOCAL_URL, None, LOCAL_MODEL, prompt, system)[0]
+        return _openai_compatible(*ENDPOINTS["local"], prompt, system)[0]
     except openai.APIConnectionError as e:  # Ollama / LM Studio not running
         raise Unavailable(f"no local model server at {LOCAL_URL}") from e
 
@@ -216,27 +239,101 @@ def ready_names(only: str | None) -> list[str]:
     return names
 
 
+def strict_call(name: str, prompt: str, system: str = "") -> str:
+    """Call one AI. Raises on any failure, so callers never mistake an error for an answer."""
+    return CALLERS[name](prompt, system)
+
+
 def safe_call(name: str, prompt: str, system: str = "") -> str:
+    """For human-read output (ask, debate): failures become a visible bracketed note."""
     try:
-        return CALLERS[name](prompt, system)
+        return strict_call(name, prompt, system)
     except Unavailable as e:
         return f"[{name} unavailable: {e}]"
+    except Declined as e:
+        return f"[{name} declined: {e}]"
     except Exception as e:
         return f"[{name} error: {type(e).__name__}: {e}]"
 
+
+# --------------------------------------------------------------------------- structured output
+
+def conforms(data, schema: dict) -> bool:
+    """Small JSON Schema check covering what our schemas use: object, array, string, required."""
+    t = schema.get("type")
+    if t == "object":
+        if not isinstance(data, dict):
+            return False
+        props = schema.get("properties", {})
+        if any(k not in data for k in schema.get("required", [])):
+            return False
+        return all(conforms(data[k], props[k]) for k in props if k in data)
+    if t == "array":
+        return isinstance(data, list) and all(conforms(x, schema.get("items", {})) for x in data)
+    if t == "string":
+        return isinstance(data, str)
+    return True
+
+
+def parse_json(text: str):
+    """Lenient JSON parse for models that wrap JSON in prose or code fences."""
+    text = (text or "").strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    for open_, close in (("{", "}"), ("[", "]")):
+        i, j = text.find(open_), text.rfind(close)
+        if i != -1 and j > i:
+            try:
+                return json.loads(text[i:j + 1])
+            except json.JSONDecodeError:
+                continue
+    return None
+
+
+def call_json(name: str, prompt: str, schema: dict, system: str = ""):
+    """Structured output from any AI. Returns data matching the schema, or None. Never raises."""
+    try:
+        if name == "claude":
+            data = json.loads(call_claude(prompt, system, effort="low", schema=schema))
+        else:
+            base, key, model = ENDPOINTS[name]
+            fmt = {"type": "json_schema", "json_schema": {"name": "output", "schema": schema, "strict": True}}
+            try:
+                text, _ = _openai_compatible(base, key, model, prompt, system, response_format=fmt)
+            except Exception as e:
+                import openai
+                if not isinstance(e, openai.BadRequestError):
+                    raise
+                # Endpoint doesn't support schemas: ask in words instead.
+                text, _ = _openai_compatible(base, key, model, prompt + "\n\nReturn only JSON matching this schema:\n"
+                                             + json.dumps(schema), system)
+            data = parse_json(text)
+    except Exception as e:
+        print(f"  {name} json error: {type(e).__name__}: {e}", file=sys.stderr)
+        return None
+    return data if conforms(data, schema) else None
+
+
+# --------------------------------------------------------------------------- files
 
 def save_run(kind: str, body: str) -> Path:
     RUNS.mkdir(parents=True, exist_ok=True)
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     path = RUNS / f"{stamp}-{kind}.md"
-    path.write_text(body)
+    path.write_text(body, encoding="utf-8")
     return path
 
 
-def with_file(question: str, file: str | None) -> str:
-    if not file:
-        return question
-    return f"{question}\n\n<document path=\"{file}\">\n{Path(file).read_text()}\n</document>"
+def with_file(question: str, files: list[str] | None) -> str:
+    for f in files or []:
+        question += f"\n\n<document path=\"{f}\">\n{Path(f).read_text(encoding='utf-8-sig', errors='replace')}\n</document>"
+    return question
+
+
+def template_fields(template: str) -> set[str]:
+    return {f for _, f, _, _ in string.Formatter().parse(template) if f}
 
 
 # --------------------------------------------------------------------------- commands
@@ -257,8 +354,9 @@ def cmd_ask(args) -> None:
     for n, a in answers.items():
         out.append(f"\n## {n} ({ROLES[n]})\n\n{a}\n")
     body = "".join(out)
+    path = save_run("ask", body)
     print(body)
-    print(f"\nSaved: {save_run('ask', body)}")
+    print(f"\nSaved: {path}")
 
 
 def cmd_debate(args) -> None:
@@ -294,9 +392,9 @@ def cmd_debate(args) -> None:
     parts.append("\n## Round 2 (after reading each other)\n")
     parts += [f"\n### {n} ({ROLES[n]})\n{a}\n" for n, a in r2.items()]
     parts.append(f"\n## Decision ({chair})\n\n{decision}\n")
-    body = "".join(parts)
+    path = save_run("debate", "".join(parts))  # save first, so nothing is lost if printing fails
     print(f"## Decision ({chair})\n\n{decision}")
-    print(f"\nFull transcript: {save_run('debate', body)}")
+    print(f"\nFull transcript: {path}")
 
 
 def cmd_research(args) -> None:
@@ -305,56 +403,84 @@ def cmd_research(args) -> None:
         who, answer = "perplexity", safe_call("perplexity", args.topic, sys_msg)
     elif os.getenv("ANTHROPIC_API_KEY"):
         who = "claude+web_search"
+        urls: list[str] = []
         try:
-            answer = call_claude(args.topic, sys_msg, web=True)
+            answer = call_claude(args.topic, sys_msg, web=True, sources=urls)
+            if urls:
+                answer += "\n\nSources:\n" + "\n".join(f"- {u}" for u in dict.fromkeys(urls))
         except Exception as e:
             answer = f"[claude error: {e}]"
     else:
         sys.exit("Research needs PERPLEXITY_API_KEY or ANTHROPIC_API_KEY in business/tools/.env")
     body = f"# Research ({who})\n\n**Topic:** {args.topic}\n\n{answer}\n"
+    path = save_run("research", body)
     print(body)
-    print(f"\nSaved: {save_run('research', body)}")
+    print(f"\nSaved: {path}")
 
 
 def cmd_bulk(args) -> None:
     """Fill one new column in a CSV by running a prompt template on every row.
     Template placeholders are column names in braces, e.g. {company} {website}.
-    Re-running skips rows that already have a value, so it resumes after a crash."""
-    template = Path(args.prompt).read_text()
-    rows = list(csv.DictReader(open(args.inp, newline="", encoding="utf-8-sig")))
+    Re-running the same input resumes: a row keeps its stored value only if every
+    input column is identical, and rows that failed are retried."""
+    template = Path(args.prompt).read_text(encoding="utf-8")
+    with open(args.inp, newline="", encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
     if not rows:
         sys.exit("Input CSV is empty")
+    inputs = [k for k in rows[0] if k and k != args.column]
+    missing = sorted(template_fields(template) - set(inputs))
+    if missing:
+        sys.exit(f"The prompt uses {{{'}, {'.join(missing)}}} but the CSV has no such column(s).\n"
+                 f"CSV columns: {', '.join(inputs)}\nRename the CSV columns to match, then re-run.")
+
     order = [args.ai] if args.ai else ["local", "gemini", "claude", "chatgpt"]
     stat = available()
     worker = next((n for n in order if stat.get(n) == "ready"), None)
     if not worker:
-        sys.exit("No worker AI ready for bulk. Start Ollama or add a key.")
+        sys.exit(f"No worker AI ready for bulk ({', '.join(order)}). Run `python council.py status`.")
     print(f"Bulk worker: {worker} ({len(rows)} rows)")
 
+    def key(r: dict) -> tuple:
+        return tuple((k, r.get(k) or "") for k in inputs)
+
     out_path = Path(args.out)
-    if out_path.exists():  # resume
-        done = {i: r for i, r in enumerate(csv.DictReader(open(out_path, newline="", encoding="utf-8")))}
-        for i, r in done.items():
-            if i < len(rows) and r.get(args.column):
-                rows[i][args.column] = r[args.column]
+    if out_path.exists():
+        with open(out_path, newline="", encoding="utf-8-sig") as f:
+            stored = {key(r): r.get(args.column) for r in csv.DictReader(f) if r.get(args.column)}
+        for r in rows:
+            r[args.column] = stored.get(key(r), "")
 
     todo = [i for i, r in enumerate(rows) if not r.get(args.column)]
+    failures: list[str] = []
 
     def run(i: int) -> tuple[int, str]:
-        filled = template.format_map(defaultdict(str, rows[i]))
-        return i, safe_call(worker, filled, ROLE_BRIEF["Worker"])
+        filled = template.format_map(defaultdict(str, {k: v or "" for k, v in rows[i].items()}))
+        try:
+            return i, strict_call(worker, filled, ROLE_BRIEF["Worker"]).strip()
+        except Exception as e:
+            failures.append(f"row {i + 2}: {type(e).__name__}: {e}")
+            return i, ""  # left empty, so the next run retries it
 
-    fields = list(rows[0].keys()) + ([args.column] if args.column not in rows[0] else [])
+    fields = inputs + [args.column]
+
+    def save() -> None:
+        with open(out_path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
+
     with cf.ThreadPoolExecutor(args.workers) as pool:
         for n, (i, val) in enumerate(pool.map(run, todo), 1):
             rows[i][args.column] = val
             if n % 10 == 0 or n == len(todo):
-                with open(out_path, "w", newline="", encoding="utf-8") as f:
-                    w = csv.DictWriter(f, fieldnames=fields)
-                    w.writeheader()
-                    w.writerows(rows)
+                save()
                 print(f"  {n}/{len(todo)}")
+    save()
     print(f"Wrote {out_path}")
+    if failures:
+        print(f"{len(failures)} row(s) failed and were left empty. Re-run the same command to retry them:",
+              *failures[:5], sep="\n  ")
 
 
 def main() -> None:
@@ -365,12 +491,12 @@ def main() -> None:
 
     a = sub.add_parser("ask", help="same question to every AI, answers side by side")
     a.add_argument("question")
-    a.add_argument("--file", help="attach a text/markdown file as context")
+    a.add_argument("--file", action="append", help="attach a text/markdown file (repeat for several)")
     a.add_argument("--ai", help="comma list to limit, e.g. claude,chatgpt")
 
     d = sub.add_parser("debate", help="answer, cross-critique, then a written decision")
     d.add_argument("question")
-    d.add_argument("--file")
+    d.add_argument("--file", action="append", help="attach a file (repeat for several)")
     d.add_argument("--ai")
 
     r = sub.add_parser("research", help="live web research with citations")
@@ -381,7 +507,7 @@ def main() -> None:
     b.add_argument("--prompt", required=True, help="template file with {column} placeholders")
     b.add_argument("--out", required=True)
     b.add_argument("--column", required=True, help="name of the new column to fill")
-    b.add_argument("--ai", help="force a worker (default: local, then gemini, claude, chatgpt)")
+    b.add_argument("--ai", help="force a model (default: local, then gemini, claude, chatgpt). Use claude for anything a buyer reads")
     b.add_argument("--workers", type=int, default=4)
 
     args = p.parse_args()

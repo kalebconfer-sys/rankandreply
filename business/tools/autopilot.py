@@ -33,6 +33,7 @@ import visibility as V
 
 PROMPTS = C.HERE / "prompts"
 LABELS = {"yes", "question", "price", "wants_call", "has_agency", "not_now", "no", "ooo", "other"}
+# "unsorted" means the model call failed: a person reads that reply.
 REPLY_ALIASES = ["reply_text", "reply text", "reply", "body", "message", "reply body", "last reply"]
 
 
@@ -51,10 +52,11 @@ def cmd_leads(args) -> None:
     src = Path(args.inp)
     stem = src.with_suffix("")
     step1, step2, ready = f"{stem}-1-enriched.csv", f"{stem}-2-probed.csv", f"{stem}-ready.csv"
-    V.cmd_enrich(Namespace(inp=str(src), out=step1, ai=None, region=args.region, workers=args.workers))
-    V.cmd_probe(Namespace(inp=step1, out=step2, engine=args.engine, workers=args.workers))
+    V.cmd_enrich(Namespace(inp=str(src), out=step1, ai=None, region=args.region, workers=args.workers, yes=args.yes))
+    V.cmd_probe(Namespace(inp=step1, out=step2, engine=args.engine, runs=args.runs, workers=args.workers, yes=args.yes))
     V.cmd_firstline(Namespace(inp=step2, out=ready))
-    print(f"\nNext: open {ready}, read 20 first lines, delete anything odd, then upload to Instantly.")
+    print(f"\nNext: open {ready}. For 20 rows, read first_line next to probe_answer (the AI's actual answer) "
+          "and delete anything that doesn't match. Then upload to Instantly.")
 
 
 # --------------------------------------------------------------------------- replies
@@ -69,7 +71,7 @@ The short version:
 - The biggest gap: {fix_1}.
 
 If you'd like to fix it yourself, the five fixes at the end are where to start. If you'd rather we did it:
-- Fix Plan, $490 once: the full 480-answer audit, the sites the engines cite, a 30-day roadmap and two pages written for you, in 5 business days. {fixplan_link}
+- Fix Plan, $490 once: the full 480-answer audit, the sites the engines cite, a 30-day roadmap and two pages written for you, in 5 business days. Credited to your first Retainer month if you continue within 30 days. {fixplan_link}
 - Retainer, $1,500/month, month-to-month. {retainer_link}
 
 Everything is at rankandreply.com/ai-visibility. Questions? Just reply. No call needed.
@@ -81,7 +83,11 @@ def classify(row: dict, model: str) -> str:
     prompt = fill((PROMPTS / "classify_reply.txt").read_text(),
                   {**row, "reply_text": reply_text(row), "first_name": V.pick(row, "first_name"),
                    "company": V.clean_company(V.pick(row, "company"))})
-    out = C.safe_call(model, prompt, C.ROLE_BRIEF["Worker"]).strip().lower()
+    try:
+        out = C.strict_call(model, prompt, C.ROLE_BRIEF["Worker"]).strip().lower()
+    except Exception as ex:
+        print(f"  couldn't classify a reply ({type(ex).__name__}); marked unsorted", file=sys.stderr)
+        return "unsorted"
     word = re.findall(r"[a-z_]+", out)
     return next((w for w in word if w in LABELS), "other")
 
@@ -91,14 +97,17 @@ def draft(row: dict, label: str, model: str) -> str:
         return ""
     prompt = fill((PROMPTS / "draft_reply.txt").read_text(),
                   {"reply_text": reply_text(row), "label": label, "first_name": V.pick(row, "first_name")})
-    return C.safe_call(model, prompt, C.ROLE_BRIEF["Chair"]).strip()
+    try:
+        return C.strict_call(model, prompt, C.ROLE_BRIEF["Chair"]).strip()
+    except Exception as ex:
+        return f"[Draft failed ({type(ex).__name__}). Write this reply by hand.]"
 
 
 def report_email(row: dict, report_dir: Path) -> str:
     data = json.loads((report_dir / "raw.json").read_text())
     s, f = data["summary"], data.get("findings", {})
     brand = data["meta"]["brand"]
-    others = [b for b in s["top_brands"] if not b["is_you"]]
+    others = [b for b in s["top_brands"] if not b["is_you"] and b["answers"]]
     top = others[0] if others else {"name": "No single competitor", "share": 0}
     fixes = f.get("fixes") or [{"title": "see the fixes at the end of the report"}]
     return fill(TEMPLATE_A, {
@@ -137,8 +146,8 @@ def cmd_replies(args) -> None:
                     print(f"[{i}/{len(rows)}] report for {company}...", file=sys.stderr)
                     try:
                         V.cmd_snapshot(Namespace(
-                            brand=company, domain=domain, aliases=None, questions=None, n=20, region=args.region,
-                            engines=None, runs=1, compare=None, out=str(rdir), workers=6, yes=False, pdf=True,
+                            brand=company, domain=domain, aliases=None, questions=None, n=10, region=args.region,
+                            engines=None, runs=2, compare=None, out=str(rdir), workers=6, yes=False, pdf=True,
                             prepared_by="Rank and Reply"))
                     except SystemExit as ex:  # snapshot exits on unrecoverable problems; keep going with the rest
                         print(f"  report failed for {company}: {ex}", file=sys.stderr)
@@ -151,6 +160,8 @@ def cmd_replies(args) -> None:
         elif label == "no":
             suppress.append(email)
             body = "Done, sorry for the bother.\n\nKaleb"  # fixed text: nothing to get wrong
+        elif label == "unsorted":
+            body = "[Couldn't classify this reply. Read it and answer by hand.]"
         else:
             body = draft(row, label, chair)
 
@@ -179,7 +190,9 @@ def main() -> None:
     lp.add_argument("--in", dest="inp", required=True)
     lp.add_argument("--region")
     lp.add_argument("--engine", default="chatgpt,perplexity,gemini,claude")
+    lp.add_argument("--runs", type=int, default=2)
     lp.add_argument("--workers", type=int, default=4)
+    lp.add_argument("--yes", action="store_true", help="confirm batches over 300 paid calls")
     rp = sub.add_parser("replies", help="replies CSV -> tagged, drafted, reports run, outbox written")
     rp.add_argument("--in", dest="inp", required=True)
     rp.add_argument("--region")
