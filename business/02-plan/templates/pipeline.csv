@@ -1,0 +1,2 @@
+company,domain,contact,email,source,segment,stage,report_sent_date,offer_sent_date,last_touch_date,next_step,next_step_date,value_usd,notes
+Example Co,example.com,Dana Smith,dana@example.com,cold_email,A,report_sent,2026-10-28,2026-10-28,2026-10-31,follow-up 2,2026-11-05,1500,example row - delete

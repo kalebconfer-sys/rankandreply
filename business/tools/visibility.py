@@ -11,6 +11,7 @@ Prospecting (one line per lead, cheap):
     python visibility.py firstline --in leads_2.csv       --out leads_ready.csv
 
 Reports (one company, thorough):
+    python visibility.py questions --brand "Acme" --domain acme.com --n 40 --out q.txt
     python visibility.py snapshot --brand "Acme" --domain acme.com
     python visibility.py snapshot --brand "Acme" --domain acme.com --questions q.txt --runs 3 --compare ../data/reports/acme/2026-10-12/raw.json
 
@@ -353,7 +354,12 @@ def aggregate(rows: list[dict], brand: str, pats) -> dict:
     for r in ok:
         qd = questions.setdefault(r["question"], {})
         qd.setdefault(r["engine"], []).append(r["mentioned"])
+    sources = Counter()
+    for r in ok:
+        for d in {norm_domain(u) for u in r["sources"] if u}:
+            sources[d] += 1
     return {
+        "top_sources": [{"domain": d, "answers": c} for d, c in sources.most_common(15) if d],
         "answers": len(ok), "failed": len(rows) - len(ok),
         "mentioned": sum(r["mentioned"] for r in ok),
         "rate": round(100 * sum(r["mentioned"] for r in ok) / len(ok)) if ok else 0,
@@ -418,6 +424,9 @@ def render_html(brand: str, domain: str, meta: dict, agg: dict, findings: dict, 
             hits = per.get(x, [])
             cells += f"<td class='{'yes' if any(hits) else 'no'}'>{sum(hits)}/{len(hits)}</td>" if hits else "<td>–</td>"
         q_rows += f"<tr><td>{e(q)}</td>{cells}</tr>"
+    src_rows = "".join(f"<tr><td>{e(x['domain'])}</td><td>{x['answers']}</td></tr>" for x in agg.get("top_sources", []))
+    src_block = ("<h2>Sites the AI engines cited most</h2><p>Being listed, reviewed or mentioned on these sites is often what gets a company named.</p>"
+                 f"<table><tr><th>Site</th><th>Answers citing it</th></tr>{src_rows}</table>") if src_rows else ""
     fixes = "".join(f"<li><strong>{e(f['title'])}</strong><p>{e(f['why'])}</p><p class='how'>{e(f['how'])}</p></li>"
                     for f in findings.get("fixes", []))
     delta = ""
@@ -458,9 +467,27 @@ ol.fixes li{{margin-bottom:1em}}ol.fixes p{{margin:.3em 0}}.how{{color:var(--ink
 <table><tr><th>#</th><th>Company</th><th>Answers</th><th>Share</th></tr>{brand_rows}</table>
 <h2>Question by question</h2><p>How many runs named {e(brand)}, per engine.</p>
 <table><tr><th>Buyer question</th>{q_head}</tr>{q_rows}</table>
+{src_block}
 <h2>The five fixes that matter most</h2><ol class="fixes">{fixes}</ol>
 <p class="method">Method: each question was put to each engine {meta['runs']} time(s) through its official API on {e(meta['date'])}, with web search on where the API offers it. AI answers vary between runs, users and locations, so these are sampled percentages, not fixed rankings. A company counts as named when its name or domain appears in the answer. {agg['failed']} request(s) failed and are excluded. Prepared by {e(prepared_by)}.</p>
 </div></body></html>"""
+
+
+def cmd_questions(args) -> None:
+    site = fetch_site(norm_domain(args.domain))
+    if not site.get("ok"):
+        print(f"Warning: couldn't read the site: {site.get('error')}", file=sys.stderr)
+    prof = profile_company(args.brand, site, args.n, chair_name(), args.region or "")
+    if not prof:
+        sys.exit("Couldn't generate questions.")
+    text = "\n".join(prof["questions"][: args.n]) + "\n"
+    if args.out:
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(text)
+        print(f"Category: {prof['category']}\nBuyer: {prof['buyer']}\nCompetitors: {', '.join(prof['competitors'])}\nWrote {args.out}",
+              file=sys.stderr)
+    else:
+        print(text, end="")
 
 
 def cmd_snapshot(args) -> None:
@@ -686,6 +713,13 @@ def main() -> None:
     s.add_argument("--pdf", action="store_true", help="also save report.pdf (needs playwright)")
     s.add_argument("--prepared-by", default="Rank and Reply", help="name on the report (white-label for agencies)")
 
+    qp = sub.add_parser("questions", help="write the buyer questions for one company (cheap; edit before a paid run)")
+    qp.add_argument("--brand", required=True)
+    qp.add_argument("--domain", required=True)
+    qp.add_argument("--n", type=int, default=40)
+    qp.add_argument("--region")
+    qp.add_argument("--out", help="file to write (default: print)")
+
     e = sub.add_parser("enrich", help="prospect CSV: read each website, write category + buyer question")
     e.add_argument("--in", dest="inp", required=True)
     e.add_argument("--out", required=True)
@@ -704,7 +738,7 @@ def main() -> None:
     f.add_argument("--out", required=True)
 
     args = p.parse_args()
-    {"snapshot": cmd_snapshot, "enrich": cmd_enrich, "probe": cmd_probe, "firstline": cmd_firstline}[args.cmd](args)
+    {"snapshot": cmd_snapshot, "questions": cmd_questions, "enrich": cmd_enrich, "probe": cmd_probe, "firstline": cmd_firstline}[args.cmd](args)
 
 
 if __name__ == "__main__":

@@ -12,6 +12,8 @@ with inline CSS. Edit and push.
 | `privacy-policy.html` | **Required by Google.** The OAuth consent screen won't pass review without a live privacy policy carrying the Limited Use disclosure and naming every third party that touches Google user data |
 | `terms-of-service.html` | Service terms — flat fee, no contract, no guaranteed results |
 | `CNAME` | Custom domain for Pages |
+| `ai-visibility/index.html` | Offer page for AI Visibility (rankandreply.com/ai-visibility/). Separate from the contractor homepage |
+| `business/` | The business playbook, plans and tools. Start at `business/README.md`. Excluded from the Pages site by `_config.yml` |
 
 ## Things not to break
 
