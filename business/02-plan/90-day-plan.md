@@ -99,6 +99,7 @@ Day-by-day steps are in [`day-by-day.md`](day-by-day.md).
 - **Volume:** 45 inboxes at 20/day (900 sends/day) in the winning segment. Add 15 more inboxes only if bounces and complaints stay clean.
 - **Niche depth:** Inside the winning segment, split by sub-category (for example "HR software" vs "dev tools") and keep a separate copy variant for each. The best-replying sub-category gets more volume.
 - **Agency white-label channel (from day 46):** follow [`../04-outreach/agency-partners.md`](../04-outreach/agency-partners.md). The goal is 3 agencies with at least 1 client each by day 90.
+- **Reddit Ads test (from day 46):** a promoted post offering the free report, $15/day for 14 days (about $210). Keep it if the cost per "yes" is under about $40. See [`../04-outreach/reddit.md`](../04-outreach/reddit.md).
 - **Reduce churn:**
   - Offer the 3-month Sprint ($3,900 prepaid) in every report email.
   - Every monthly report leads with progress signals that move before AI answers do: pages published, listings won, and whether the client's own pages are being **cited** by the engines (the report already tracks this).
@@ -118,7 +119,7 @@ Day-by-day steps are in [`day-by-day.md`](day-by-day.md).
 |---|---|---|
 | Once a day, any time (30–45 min) | `autopilot.py replies`: read the outbox, send the drafts and reports, add opt-outs to Instantly's blocklist | Worker tags, Chair drafts, **you** approve and send |
 | Once a day (20 min) | `autopilot.py leads` on a new Apollo export; check 20 first lines against `probe_answer`; upload | **You** run it; the AI does the rest |
-| Up to 5 times a week (10 min each) | Upwork alert → Claude drafts a proposal → **you** edit and submit | Claude, you |
+| Once a day (15–20 min) | `scout.py run`: Reddit and Upwork posts found, scored and drafted → **you** post up to 3 Reddit replies by hand and submit good Upwork proposals | Scout, Worker, Claude, **you** |
 | Monday (45 min) | Council review: numbers, the weakest step, one change | Gemini, ChatGPT, Claude, **you** |
 | Friday (15 min) | Fill in the scoreboard (copy [`templates/scoreboard.csv`](templates/scoreboard.csv) to `business/data/` once) | You |
 
@@ -138,6 +139,8 @@ Day-by-day steps are in [`day-by-day.md`](day-by-day.md).
 | Stripe, Fiverr, Contra | $0 (fees come out of sales) | — |
 | **Total** | **about $630–790** | **about $490–640/month** |
 | Optional: a Python freelancer on standby for setup problems | up to $150 one-time | — |
+| Reddit Ads test (from day 46) | — | about $210 one-time |
+| F5Bot Reddit alerts | $0 | $0 |
 
 ## After day 90: the path to $100k/month
 

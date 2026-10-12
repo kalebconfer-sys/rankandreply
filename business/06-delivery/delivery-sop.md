@@ -57,6 +57,7 @@ AI does the measuring and the first drafts. A human checks everything before it 
 
 - **Fake reviews:** we don't post, buy or ask for them. We don't create sockpuppet accounts.
 - **Undisclosed promotion:** we don't write it anywhere, Reddit included.
+- **Seeding Reddit or forums for a client:** we don't do it, even with disclosure. Reddit is actively removing AI-visibility seeding (July 2026), and it puts the client's brand at risk.
 - **Mass-produced thin pages:** these get sites penalized.
 - **Ranking promises:** we don't promise or imply guaranteed rankings, in any document.
 - **Unapproved publishing:** nothing goes on a client's site without their written approval.

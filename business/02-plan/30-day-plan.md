@@ -34,7 +34,7 @@ The exact daily steps are in [`day-by-day.md`](day-by-day.md).
 | 4 | Stripe: Fix Plan $490, Retainer $1,500/mo and Sprint $3,900 links; virtual mailbox; check the fictitious-name registration | You | Links open a checkout page; address in hand |
 | 5 | 7 more snapshots (10 in total, 5 software + 5 services) | Engine | Real cost per report noted |
 | 6 | Council debate on the 10 reports: is the hook true and strong? | All the AIs | Decision saved in `business/runs/` |
-| 7 | Upwork profile, Catalog and saved-search alerts; Fiverr gig; Contra profile | You paste; Claude wrote the copy | All three live |
+| 7 | Upwork profile, Catalog and saved-search alerts; Fiverr gig; Contra profile; F5Bot Reddit alerts; read-only inbox access for `scout.py` | You paste; Claude wrote the copy | All live; `scout.py run` reads the alert emails |
 | 8 | Merge the branch so /ai-visibility/ is live; swap in the Stripe links | You (Claude makes the edit) | rankandreply.com/ai-visibility/ loads with working buttons |
 
 ## Week 2 (days 8–14): Build the first lead batches; keep warming
@@ -47,7 +47,7 @@ The exact daily steps are in [`day-by-day.md`](day-by-day.md).
 | 4 | Load Sequences 1 and 2 into Instantly with the compliance footer on and tracking OFF | You | Test emails land in your own Gmail/Outlook/Yahoo inboxes, not spam |
 | 5 | Critic red-teams the emails as the buyer and as a spam filter | ChatGPT | 3 weakest points fixed |
 | 6 | Dry-run the reply process on 8 made-up replies | Autopilot | Labels right, drafts sendable |
-| 7 | Up to 5 Upwork proposals on fixed-price posts | Claude drafts, you submit | Sent |
+| 7 | Daily `scout.py run`: Reddit replies (answers only, no business mentions for 2 weeks) and up to 5 Upwork proposals a week | Scout + Claude draft, you post | Posted by hand |
 
 ## Week 3 (days 15–21): Launch
 

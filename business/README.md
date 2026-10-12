@@ -28,9 +28,10 @@
 4. [`03-offer/offer.md`](03-offer/offer.md): exactly what we sell, the honest guarantee, and the unit economics
 5. [`04-outreach/cold-email.md`](04-outreach/cold-email.md): why cold email failed before and the setup that fixes it, plus sequences, reply templates and legal checklist
 6. [`04-outreach/marketplaces.md`](04-outreach/marketplaces.md): Upwork, Fiverr (gigs for this exact service already exist there), Contra, and which sites to skip
-7. [`04-outreach/agency-partners.md`](04-outreach/agency-partners.md): the white-label channel from day 46
-8. [`06-delivery/delivery-sop.md`](06-delivery/delivery-sop.md): how a client month gets done, and the QA checklist
-9. [`05-ai-team/roles.md`](05-ai-team/roles.md): which AI does what; [`council-prompts.md`](05-ai-team/council-prompts.md) runs the council with just your subscriptions
+7. [`04-outreach/reddit.md`](04-outreach/reddit.md): finding buyers on Reddit and Upwork automatically, and why you post by hand
+8. [`04-outreach/agency-partners.md`](04-outreach/agency-partners.md): the white-label channel from day 46
+9. [`06-delivery/delivery-sop.md`](06-delivery/delivery-sop.md): how a client month gets done, and the QA checklist
+10. [`05-ai-team/roles.md`](05-ai-team/roles.md): which AI does what; [`council-prompts.md`](05-ai-team/council-prompts.md) runs the council with just your subscriptions
 
 ## The tools (in [`tools/`](tools/))
 
@@ -38,6 +39,7 @@
 |---|---|
 | `council.py` | Runs one task across Claude, ChatGPT, Gemini, Perplexity and your local model. Modes: side-by-side answers, a debate with a written decision, cited research, and bulk work over a spreadsheet |
 | `visibility.py` | The product. `enrich` → `probe` → `firstline` turns an Apollo export into personalized opening lines, each checked against the AI's saved answer. `snapshot` produces the client report (HTML/PDF) |
+| `scout.py` | Finds people asking for this on Reddit and Upwork: reads F5Bot and Upwork alert emails (read-only), searches reddit.com through Perplexity, scores each post, drafts a reply or proposal. **You post by hand**: Reddit treats automated promotional posting as spam |
 | `autopilot.py` | The daily routine in two commands: `leads` (Apollo export → ready-to-upload CSV) and `replies` (tag, draft, run reports for every yes, write an outbox for you to send) |
 | `prompts/` | Templates for tagging replies, drafting replies, Upwork proposals, writing pages and QA |
 

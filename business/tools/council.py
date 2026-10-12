@@ -101,9 +101,11 @@ def _claude_client():
 
 
 def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = "high",
-                schema: dict | None = None, sources: list | None = None) -> str:
+                schema: dict | None = None, sources: list | None = None,
+                web_domains: list[str] | None = None) -> str:
     """schema: a JSON Schema; when given, the reply is guaranteed to be valid JSON text.
-    sources: pass a list to collect the URLs web search returned."""
+    sources: pass a list to collect the URLs web search returned.
+    web_domains: limit web search to these sites (e.g. ["reddit.com"])."""
     client = _claude_client()
     output_config = {"effort": effort}
     if schema:
@@ -119,7 +121,10 @@ def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = 
     if system:
         kwargs["system"] = system
     if web:
-        kwargs["tools"] = [{"type": "web_search_20260209", "name": "web_search", "max_uses": 10}]
+        tool = {"type": "web_search_20260209", "name": "web_search", "max_uses": 10}
+        if web_domains:
+            tool["allowed_domains"] = web_domains
+        kwargs["tools"] = [tool]
 
     text_parts: list[str] = []
     for _ in range(5):  # web search can pause a long turn; resume it a few times
@@ -141,7 +146,7 @@ def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = 
 
 
 def _openai_compatible(base_url: str | None, key_env: str | None, model: str, prompt: str, system: str,
-                       response_format: dict | None = None) -> tuple[str, object]:
+                       response_format: dict | None = None, extra_body: dict | None = None) -> tuple[str, object]:
     from openai import OpenAI
     if key_env and not os.getenv(key_env):
         raise Unavailable(f"{key_env} not set")
@@ -152,6 +157,8 @@ def _openai_compatible(base_url: str | None, key_env: str | None, model: str, pr
     )
     messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
     extra = {"response_format": response_format} if response_format else {}
+    if extra_body:  # provider-specific options, e.g. Perplexity's search_domain_filter
+        extra["extra_body"] = extra_body
     resp = client.chat.completions.create(model=model, messages=messages, **extra)
     return (resp.choices[0].message.content or "").strip(), resp
 

@@ -95,6 +95,11 @@ Everything that says `python ...` runs from that folder. You need Python 3.10 or
 1. 👤 **Upwork:** paste the profile from [`../04-outreach/marketplaces.md`](../04-outreach/marketplaces.md). Create the Catalog listing (3 tiers). Use one of your 10 reports, anonymized, as the portfolio sample. Set up the saved searches with email alerts.
 2. 👤 **Fiverr:** create the gig (3 packages, requirements, description).
 3. 👤 **Contra:** profile plus 2 services at direct prices.
+4. 👤 **Reddit and Upwork alerts (20 minutes):**
+   - Sign up for F5Bot with the keywords in [`reddit.md`](../04-outreach/reddit.md).
+   - Create a Gmail app password and put `IMAP_USER` and `IMAP_PASSWORD` in `.env` (a separate alerts-only Gmail is best).
+   - 🤖 Test it: `python scout.py run`. It should print how many alert emails it read.
+5. 👤 **Reddit account:** set an honest profile. For the next 2 weeks, answer questions only; never mention the business.
 
 ## Day 7: Site live (about 30 minutes)
 
@@ -153,7 +158,7 @@ Same as day 8, for **Segment B** (services, United States only, with `--region` 
 - [ ] Suppression list created (and shared across campaigns)
 - [ ] Stripe links live on the page and in `.env`
 - [ ] Onboarding form linked from Stripe
-- [ ] Up to 5 Upwork proposals sent on fixed-price posts from your alerts (drafts: `council.py bulk ... --prompt prompts/upwork_proposal.txt --ai claude`)
+- [ ] `python scout.py run` works, and any good Upwork jobs have proposals submitted (at most 5 a week)
 
 ---
 
@@ -175,7 +180,11 @@ Same as day 8, for **Segment B** (services, United States only, with `--region` 
 
 **Once a day (20 min): leads.** Run `autopilot.py leads` on a new verified Apollo export, then check 20 rows. At full volume each sending day uses about 200 new leads, so keep 3 days queued.
 
-**Up to 5 times a week (10 min each): Upwork.** When an alert comes in, Claude drafts the proposal; you edit and submit.
+**Once a day (15–20 min): Reddit and Upwork.** Run `python scout.py run`, then open the `scout-*.txt` files in today's outbox:
+- **Reddit:** read the whole thread and the subreddit rules, rewrite the draft in your own words, and post. At most 3 a day.
+- **Upwork:** check the job, edit the proposal, and submit by hand. At most 5 a week.
+
+The full rules are in [`reddit.md`](../04-outreach/reddit.md).
 
 **Ramp:**
 

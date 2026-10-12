@@ -1,0 +1,10 @@
+# One search per line. Each runs against reddit.com for recent threads (one paid Perplexity or Claude call each).
+# Lines starting with # are ignored. Edit freely: the best queries sound like the buyer, not like a marketer.
+how do I get my company recommended by ChatGPT
+ChatGPT recommends our competitors instead of us
+how to show up in AI search results like Perplexity or Gemini for a SaaS product
+is generative engine optimization (GEO) worth paying an agency for
+answer engine optimization (AEO) for a B2B company
+Google AI Overviews cut our organic traffic, what are you doing about it
+how do LLMs decide which brands or vendors to recommend
+MSP or IT services company getting found in ChatGPT

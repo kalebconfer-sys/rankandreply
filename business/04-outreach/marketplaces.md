@@ -57,14 +57,14 @@ Prices match the direct prices plus the platform fee (see the table in [`../03-o
 
 **Second listing (from week 3):** "AI-search-ready comparison or alternatives page, written and researched": $180 per page, or $600 for 4.
 
-### Finding jobs
-Perplexity and the other AIs **can't read Upwork job pages**, so use Upwork's own tools:
-- Create **saved searches with email alerts** for `GEO`, `AEO`, `generative engine optimization`, `AI search visibility`, `ChatGPT visibility`, `LLM SEO`, `AI Overviews`. Filter: fixed price, payment verified.
-- When an alert arrives, paste the post text into a CSV column `post` (and the probe result into `probe` if you ran one). Then draft with Claude:
-  ```bash
-  python council.py bulk --in ../data/upwork/posts.csv --prompt prompts/upwork_proposal.txt --out ../data/upwork/proposals.csv --column proposal --ai claude
-  ```
-- Read each draft, edit it, and submit by hand.
+### Finding jobs (automated looking, manual submitting)
+The AIs can't read Upwork job pages, and Upwork shut down its RSS feeds in 2024. The official route is **saved searches with email alerts**, and `scout.py` reads those emails for you:
+1. Create saved searches with email alerts for `GEO`, `AEO`, `generative engine optimization`, `AI search visibility`, `ChatGPT visibility`, `LLM SEO`, `AI Overviews`. Filter: fixed price, payment verified.
+2. Set up the read-only inbox access once (see [`reddit.md`](reddit.md), setup step 3).
+3. Every day, `python scout.py run` turns new alert emails into scored jobs with a Claude-drafted proposal in `business/data/outbox/<date>/`.
+4. Open the job, check it's fixed-price and still open, edit the draft, and **submit by hand**.
+
+The same command also covers Reddit. See [`reddit.md`](reddit.md).
 
 **Bid on:**
 - Fixed-price audits and AI-search content jobs.

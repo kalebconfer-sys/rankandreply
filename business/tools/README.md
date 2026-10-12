@@ -48,6 +48,21 @@ python council.py status
 | `visibility.py questions --brand X --domain x.com --n 40 --out q.txt` | Just the buyer questions, to edit before a paid run |
 | `visibility.py enrich / probe / firstline` | The three lead steps on their own |
 
+## scout.py (Reddit and Upwork)
+
+| Command | What it does |
+|---|---|
+| `scout.py run` | Reads new Upwork and F5Bot alert emails, searches reddit.com for recent buyer questions, scores every post, and drafts replies and proposals into `business/data/outbox/<date>/scout-*.txt` |
+| `scout.py inbox` / `scout.py reddit` | Just one of the two sources |
+| `--eml-dir folder` | Parse saved `.eml` files instead of logging in to the inbox |
+
+**What it never does:**
+- **Post anything.** You post every reply and submit every proposal by hand.
+- **Touch your mail.** The inbox is opened read-only, only alert senders are fetched, and nothing is marked, moved or deleted.
+- **Keep a thread the search didn't return.** If the AI's answer lists a thread that wasn't in the search results, it's dropped.
+
+Posts it has already seen are skipped on the next run. Search terms live in `scout_queries.txt`.
+
 **How "named" is decided:** the company's full name, its domain, or a competitor-list entry that normalizes to the same name ("Acme Software, Inc." = "Acme"). A shortened name on its own counts as "maybe": it isn't counted in reports and is never claimed in an email. The opening line is written only when the company was absent from **every** probe run, and every competitor it names appears in the saved `probe_answer`.
 
 **Cost guards:** `snapshot` stops above 200 paid calls, and `enrich`/`probe` above 300, unless you add `--yes`. Extraction calls are counted when the local model isn't running.

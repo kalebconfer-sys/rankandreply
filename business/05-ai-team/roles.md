@@ -5,7 +5,7 @@ Five AIs, one human. Each AI has one job it is best at. The human does only what
 | Seat | AI | Best at | Owns in this business |
 |---|---|---|---|
 | **Chair** | Claude | Reasoning, writing, code, building the deliverable | Final calls; writes every client deliverable; builds automations; writes outreach copy; synthesizes the council |
-| **Scout** | Perplexity | Live web search with citations | Verifies prices, competitors and facts before we rely on them; checks whether a client is listed on the sites the engines cite. (It can't read Upwork job pages; Upwork's own saved-search alerts do that job) |
+| **Scout** | Perplexity | Live web search with citations | Daily: searches reddit.com for recent buyer questions (`scout.py`). Also verifies prices, competitors and facts before we rely on them, and checks whether a client is listed on the sites the engines cite. Upwork jobs and F5Bot Reddit alerts arrive by email, and `scout.py` reads them |
 | **Critic** | ChatGPT | A strong second opinion with different training | Red-teams every plan, offer and email before it ships; plays the skeptical buyer; drafts objection replies |
 | **Analyst** | Gemini | Huge context, cheap per token | Reads big lead lists and many replies at once; finds patterns; weekly numbers review. Turn **billing on** before it sees any client or contact data: the free tier may use inputs to improve Google's products |
 | **Worker** | Local model (Ollama) | Free, unlimited, private | Bulk jobs: reading prospect websites, pulling company names out of AI answers, tagging replies (interested / not now / unsubscribe). **Never writes anything a buyer reads.** Drafts, proposals and pages always go to Claude (`--ai claude`) |
