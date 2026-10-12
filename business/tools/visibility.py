@@ -397,7 +397,8 @@ def write_findings(brand: str, site: dict, agg: dict, rows: list[dict]) -> dict:
                     "summary": "", "fixes": []}
 
 
-def render_html(brand: str, domain: str, meta: dict, agg: dict, findings: dict, compare: dict | None) -> str:
+def render_html(brand: str, domain: str, meta: dict, agg: dict, findings: dict, compare: dict | None,
+                prepared_by: str = "Rank and Reply") -> str:
     e = html.escape
     eng_rows = "".join(
         f"<tr><td>{e(ENGINE_LABEL.get(k, k))}</td><td>{v['mentioned']} / {v['answers']}</td>"
@@ -458,7 +459,7 @@ ol.fixes li{{margin-bottom:1em}}ol.fixes p{{margin:.3em 0}}.how{{color:var(--ink
 <h2>Question by question</h2><p>How many runs named {e(brand)}, per engine.</p>
 <table><tr><th>Buyer question</th>{q_head}</tr>{q_rows}</table>
 <h2>The five fixes that matter most</h2><ol class="fixes">{fixes}</ol>
-<p class="method">Method: each question was put to each engine {meta['runs']} time(s) through its official API on {e(meta['date'])}, with web search on where the API offers it. AI answers vary between runs, users and locations, so these are sampled percentages, not fixed rankings. A company counts as named when its name or domain appears in the answer. {agg['failed']} request(s) failed and are excluded. Prepared by Rank and Reply.</p>
+<p class="method">Method: each question was put to each engine {meta['runs']} time(s) through its official API on {e(meta['date'])}, with web search on where the API offers it. AI answers vary between runs, users and locations, so these are sampled percentages, not fixed rankings. A company counts as named when its name or domain appears in the answer. {agg['failed']} request(s) failed and are excluded. Prepared by {e(prepared_by)}.</p>
 </div></body></html>"""
 
 
@@ -497,8 +498,28 @@ def cmd_snapshot(args) -> None:
     (out / "questions.txt").write_text("\n".join(questions) + "\n")
     (out / "raw.json").write_text(json.dumps({"meta": meta, "summary": {**agg, "date": TODAY}, "findings": findings,
                                               "rows": rows}, indent=2))
-    (out / "report.html").write_text(render_html(args.brand, domain, meta, agg, findings, compare))
-    print(f"\n{findings.get('headline', '')}\nReport: {out / 'report.html'}")
+    html_path = out / "report.html"
+    html_path.write_text(render_html(args.brand, domain, meta, agg, findings, compare, args.prepared_by))
+    print(f"\n{findings.get('headline', '')}\nReport: {html_path}")
+    if args.pdf:
+        print(f"PDF: {to_pdf(html_path)}")
+
+
+def to_pdf(html_path: Path) -> str:
+    """Print the report to PDF with Playwright if installed; otherwise say how to do it by hand."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        return "skipped (pip install playwright && playwright install chromium), or open report.html in Chrome and Print > Save as PDF"
+    pdf = html_path.with_suffix(".pdf")
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page()
+        page.goto(html_path.resolve().as_uri())
+        page.pdf(path=str(pdf), format="Letter", print_background=True,
+                 margin={"top": "0.5in", "bottom": "0.5in", "left": "0.4in", "right": "0.4in"})
+        browser.close()
+    return str(pdf)
 
 
 # --------------------------------------------------------------------------- prospect pipeline
@@ -662,6 +683,8 @@ def main() -> None:
     s.add_argument("--out", help="output folder (default business/data/reports/<brand>/<date>)")
     s.add_argument("--workers", type=int, default=6)
     s.add_argument("--yes", action="store_true", help="confirm runs over 200 API calls")
+    s.add_argument("--pdf", action="store_true", help="also save report.pdf (needs playwright)")
+    s.add_argument("--prepared-by", default="Rank and Reply", help="name on the report (white-label for agencies)")
 
     e = sub.add_parser("enrich", help="prospect CSV: read each website, write category + buyer question")
     e.add_argument("--in", dest="inp", required=True)

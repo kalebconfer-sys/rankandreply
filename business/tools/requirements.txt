@@ -1,2 +1,4 @@
 anthropic>=1.13
 openai>=1.50
+# Optional: PDF reports (visibility.py snapshot --pdf). After installing, run: playwright install chromium
+playwright>=1.56
