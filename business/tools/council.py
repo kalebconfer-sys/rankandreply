@@ -90,14 +90,19 @@ def _claude_client():
     return anthropic.Anthropic()
 
 
-def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = "high") -> str:
+def call_claude(prompt: str, system: str = "", web: bool = False, effort: str = "high",
+                schema: dict | None = None) -> str:
+    """schema: a JSON Schema; when given, the reply is guaranteed to be valid JSON text."""
     client = _claude_client()
+    output_config = {"effort": effort}
+    if schema:
+        output_config["format"] = {"type": "json_schema", "schema": schema}
     kwargs = dict(
         model=CLAUDE_MODEL,
         max_tokens=16000,
         betas=["server-side-fallback-2026-07-01"],
         fallbacks="default",  # if a safety classifier declines, the API re-runs on a fallback model
-        output_config={"effort": effort},
+        output_config=output_config,
         messages=[{"role": "user", "content": prompt}],
     )
     if system:
