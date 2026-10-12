@@ -60,7 +60,9 @@ python visibility.py probe     --in ../data/leads/a1.csv --out ../data/leads/a2.
 python visibility.py firstline --in ../data/leads/a2.csv --out ../data/leads/a3-ready.csv
 ```
 
-Open `a3-ready.csv` and **read 20 rows** before uploading. Does each first line make sense? Is the question something a buyer would really ask? Delete any odd rows. Then upload to Instantly and map the columns `first_name`, `company`, `first_line`, `buyer_question`, `named_1`, `named_2` as custom variables.
+Or run all three at once: `python autopilot.py leads --in ../data/leads/2026-10-27-apollo.csv`.
+
+Open the ready file and **check 20 rows** before uploading. Read each `first_line` next to `probe_answer` (the AI's actual saved answer): every company named in the line must be in the answer, and the prospect must not be. Is the question something a buyer would really ask? Delete any row that fails. Then upload to Instantly and map the columns `first_name`, `company`, `first_line`, `buyer_question`, `named_1`, `named_2` as custom variables.
 
 `segment = not_named` rows go to **Sequence 1**. `segment = named` rows go to **Sequence 2**.
 
