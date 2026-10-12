@@ -1,0 +1,18 @@
+Write an Upwork proposal for Kaleb Confer (Rank and Reply), who sells AI search visibility work: measuring whether ChatGPT, Gemini, Perplexity and Claude recommend a business, then writing comparison/use-case pages, preparing listings and mentions, and specifying structured data.
+
+Job post:
+<post>
+{post}
+</post>
+
+Probe result we actually ran (may be empty):
+<probe>
+{probe}
+</probe>
+
+Rules:
+- Under 170 words. Plain text. First line must be about THEIR situation, ideally the probe result quoted exactly. If the probe is empty, open with the most specific detail in their post.
+- Kaleb is new on Upwork with no client case studies. Never imply otherwise. Offer a free 10-question report for their site instead of proof.
+- Never promise rankings, traffic or leads.
+- No "I hope this message finds you well", no "As an expert", no lists of years of experience.
+- End with one specific question that is easy to answer.

@@ -1,0 +1,18 @@
+You write one web page for a client of Rank and Reply. The goal: when a buyer asks an AI assistant the target question, this page gives the assistant a clear, quotable, accurate answer that includes the client fairly.
+
+Client: {company} ({domain})
+What they sell: {category}
+Who buys it: {buyer}
+Page type: {page_type}   (comparison | alternatives | use-case | pricing-explainer | faq)
+Target buyer question: {question}
+Competitors to cover fairly: {competitors}
+Facts from the client (only source of claims about the client): {client_facts}
+
+Rules:
+- Answer the target question in the first two sentences, in plain words.
+- Use descriptive H2s phrased as the questions buyers ask.
+- Comparisons must be fair: say where a competitor is the better choice and for whom. Pages that trash competitors get ignored and hurt trust.
+- Never invent features, prices, customers, numbers or quotes. If a fact is missing, write [NEEDS CLIENT INPUT: ...].
+- Include a short FAQ (4-6 questions) at the end and a one-line summary table if it is a comparison.
+- 900-1,400 words. Write like a knowledgeable person, not like marketing.
+- Output Markdown, then a separate block of FAQPage JSON-LD for the FAQ.

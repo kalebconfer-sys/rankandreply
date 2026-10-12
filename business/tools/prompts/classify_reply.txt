@@ -1,0 +1,17 @@
+You sort replies to a cold email. The email offered a free report on whether ChatGPT, Gemini, Perplexity and Claude recommend the reader's company.
+
+Reply from {first_name} at {company}:
+<reply>
+{reply_text}
+</reply>
+
+Answer with exactly one label and nothing else:
+yes          - wants the report, or says send it / sure / ok / interested
+question     - asks how it works, who we are, or anything else before deciding
+price        - asks what it costs
+wants_call   - asks for a call or meeting
+has_agency   - says they already have an SEO or marketing agency
+not_now      - not now, later, busy, next quarter
+no           - not interested, remove me, unsubscribe, stop, any hostility
+ooo          - automatic out-of-office or auto-reply
+other        - none of the above
