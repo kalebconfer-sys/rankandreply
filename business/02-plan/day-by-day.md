@@ -37,10 +37,10 @@ Everything that says `python ...` runs from that folder. You need Python 3.10 or
    | Gemini | aistudio.google.com | **Turn billing on.** The free tier may use your inputs to improve Google's products, and we'll be sending client data through it |
    | Perplexity | perplexity.ai/settings/api | Uses your Pro credit, or add $10 |
 
-2. 👤 Install Python 3.10+ and Ollama, then run `ollama pull llama3.1:8b`. If your computer has less than 16 GB of memory, skip Ollama and put `LOCAL_DISABLED=1` in `.env`; Gemini then does the bulk work.
-3. 👤 In `business/tools`, run `pip install -r requirements.txt`, then `playwright install chromium`.
-4. 👤 Copy `.env.example` to `.env` and paste in the keys.
-5. 🤖 Run `python council.py status`. Each AI you set up should say `ready`.
+2. 👤 **Windows:** follow [`../SETUP.md`](../SETUP.md). Install Python, then double-click `business\tools\setup.bat`. It installs everything and opens `.env` for your keys. **Mac:** run `bash setup-mac.sh`.
+3. 👤 Optional: install Ollama and run `ollama pull llama3.1:8b`. If your computer has less than 16 GB of memory, skip Ollama and put `LOCAL_DISABLED=1` in `.env`; Gemini then does the bulk work.
+4. 👤 Paste the keys into `.env` and save.
+5. 🤖 Run `setup.bat` again (or `python council.py status`). Each AI you set up should say `ready`.
 6. 🤖 First council test:
    ```bash
    python council.py ask "In one sentence each: what's the biggest risk in this plan?" --file ../01-research/market-research.md

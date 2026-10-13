@@ -1,4 +1,5 @@
-# GitHub Pages: keep the internal business playbook off rankandreply.com
-# if this branch is ever merged into main.
+# GitHub Pages: keep the internal business playbook and the Claude notes
+# off rankandreply.com if this branch is ever merged into main.
 exclude:
   - business
+  - CLAUDE.md

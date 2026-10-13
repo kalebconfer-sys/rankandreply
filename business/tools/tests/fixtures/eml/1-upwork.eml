@@ -1,0 +1,28 @@
+From: Upwork <donotreply@upwork.com>
+To: kaleb@example.com
+Subject: New jobs matching "GEO"
+Date: Mon, 12 Oct 2026 09:00:00 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="b1"
+
+--b1
+Content-Type: text/plain; charset="utf-8"
+
+New jobs that match your saved search
+GEO audit for B2B SaaS: are we visible in ChatGPT?
+https://www.upwork.com/jobs/~021234567890abcdef1?source=email
+Fixed price: $400. We sell HR software and want to know why ChatGPT never mentions us.
+
+--b1
+Content-Type: text/html; charset="utf-8"
+
+<html><body><style>.x{color:red}</style>
+<h2>New jobs that match your saved search</h2>
+<a href="https://click.upwork.com/ls/click?upn=https%3A%2F%2Fwww.upwork.com%2Fjobs%2F~021234567890abcdef1%3Fsource%3Demail">GEO audit for B2B SaaS: are we visible in ChatGPT?</a>
+<p>Fixed price: $400. We sell HR software and want to know why ChatGPT never mentions us.</p>
+<a href="https://click.upwork.com/ls/click?upn=https%3A%2F%2Fwww.upwork.com%2Fjobs%2F~021234567890abcdef1">View job</a>
+<a href="https://www.upwork.com/freelance-jobs/apply/Need-Shopify-Theme-Fix_~029999999999999999/">Need Shopify theme fix</a>
+<p>Hourly $15. Fix our theme.</p>
+<a href="https://www.upwork.com/ab/notification-settings">Manage notification settings</a>
+</body></html>
+--b1--

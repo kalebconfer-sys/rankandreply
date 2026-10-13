@@ -1,5 +1,7 @@
 # Start here
 
+> **Setting up on your computer?** Follow [`SETUP.md`](SETUP.md): download, double-click `setup.bat`, done.
+
 **The business:** *AI Visibility by Rank and Reply.* B2B buyers increasingly ask ChatGPT, Gemini, Perplexity and Claude "who should we use?" We measure whether a company gets recommended, show it who gets named instead, and do the work to close that gap every month.
 
 **Why this one:** It was researched from a cold start against eight other AI businesses. It was the only one of the models we researched with a third-party-verified $100k+/month business (AEO Engine, $135k MRR; one data point, not a market average). Agencies publish retainer prices of $1,500–$5,000/month for this work. The first email can show something true and specific about the reader, checked against the AI's saved answer. All of it sells without a sales call. Full reasoning and sources: [`01-research/market-research.md`](01-research/market-research.md).

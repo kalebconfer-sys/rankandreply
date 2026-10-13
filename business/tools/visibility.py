@@ -270,10 +270,14 @@ def chair_name() -> str:
     sys.exit("No model ready. Add a key to business/tools/.env")
 
 
+COST_GUARD_EXIT = 3  # the .bat files look for this code and ask "run it anyway?"
+
+
 def confirm_cost(calls: int, limit: int, yes: bool, what: str) -> None:
     print(f"About {calls} paid API calls for {what}.", file=sys.stderr)
     if calls > limit and not yes:
-        sys.exit(f"That's over {limit}. Re-run with --yes to confirm, or make the job smaller.")
+        print(f"That's over {limit}. Re-run with --yes to confirm, or make the job smaller.", file=sys.stderr)
+        sys.exit(COST_GUARD_EXIT)
 
 
 BRANDS_SCHEMA = {
