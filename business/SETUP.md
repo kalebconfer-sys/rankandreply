@@ -1,5 +1,21 @@
 # Get this onto your computer (Windows)
 
+## The fastest way: one line
+
+1. Click Start, type **PowerShell**, and press Enter.
+2. Paste this line and press Enter:
+   ```
+   irm https://raw.githubusercontent.com/kalebconfer-sys/rankandreply/refs/heads/claude/ai-automated-business-plan-ptu9y7/install.ps1 | iex
+   ```
+3. That's it:
+   - Everything is now in **Documents\RankAndReply**, pinned on the left of File Explorer, with a **Rank and Reply** shortcut on your Desktop.
+   - From now on, type **`rankandreply`** in any terminal to open Claude on the project.
+   - To get the newest version later, paste the same line again. Your keys and private data are never touched.
+
+Then skip to **Step 2** below (install Python) and **Step 3** (`setup.bat`).
+
+## The other ways
+
 Everything lives in your GitHub repository **kalebconfer-sys/rankandreply**, on the branch `claude/ai-automated-business-plan-ptu9y7`. Pick **one** way to get it.
 
 ## Step 1: get the files

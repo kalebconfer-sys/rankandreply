@@ -29,6 +29,7 @@ The business measures whether ChatGPT, Gemini, Perplexity and Claude recommend a
 | `scout.py` | Reads Upwork, F5Bot and Syften alert emails (IMAP, read-only) and searches reddit.com through Perplexity; drafts replies; `posts` writes weekly LinkedIn posts |
 | `outbox.py` | Builds `today.html` from the day's outbox |
 | `*.bat`, `setup-mac.sh` | Owner-facing double-click scripts (keep the `.bat` files CRLF, ASCII) |
+| `/install.ps1` | One-line Windows installer: downloads the branch ZIP into Documents\\RankAndReply, pins it, adds a Desktop shortcut and the `rankandreply` command. Keep it ASCII; it must never delete or overwrite `.env`, `business/data` or `.venv` |
 
 - Keys and model names come from `business/tools/.env` (template: `.env.example`). The default Claude model is `claude-opus-5-5` with server-side refusal fallback.
 - **Before committing any change to the tools, run the offline tests:** `cd business/tools && python tests/run_all.py`. They must end with `0 failed`. They use `tests/fake_llm.py` (a stand-in OpenAI-compatible server) and never touch real accounts. Add a check when you fix a bug.
