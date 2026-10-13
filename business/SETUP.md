@@ -8,6 +8,7 @@ Everything lives in your GitHub repository **kalebconfer-sys/rankandreply**, on 
 1. Install GitHub Desktop from desktop.github.com and sign in with your GitHub account.
 2. File → Clone repository → `kalebconfer-sys/rankandreply` → choose a folder, for example `C:\Users\<you>\Documents\rankandreply`.
 3. At the top, click **Current branch** → choose `claude/ai-automated-business-plan-ptu9y7`.
+   **If you only see `index.html` and no `business` folder, you're on the wrong branch.** The new work isn't on `main` yet.
 4. Later, when Claude makes changes in the cloud, click **Fetch origin**, then **Pull**, and your computer has them.
 
 **Option B: one-time download (no account needed)**
