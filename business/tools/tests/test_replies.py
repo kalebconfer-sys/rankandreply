@@ -34,4 +34,12 @@ ok(R.own_words("Stop\n\nOn Tue, Sep 29, 2026, 9:37 AM Kaleb Confer <k@example.co
 ok(R.classify("Click the link below to instantly become a trusted sender.") == "AUTO", "challenge-response mail dropped")
 ok(R.classify("Interested", sender="noreply@example.com") == "AUTO", "no-reply sender dropped")
 ok(R.body_text({"body": {"text": "", "html": "<p>Send <b>it</b></p>"}}) == " Send  it  ", "html body falls back to text")
+ok(R.classify("Just send me the fixes, skip the report.") == "FIXES", "'send me the fixes' is FIXES, not SEND_IT")
+ok(R.classify("Did you even read my site? This looks like AI.") == "SKEPTIC", "skeptic")
+item = {"timestamp_created": "2026-10-14T13:00:00.000Z", "from_address_email": "a@example.com", "subject": "Re: x",
+        "body": {"text": "How much?"}, "step": "0_0_0"}
+page = R.render(item, "PRICE", {"first_name": "Ari", "company_name": "Acme"}, dt.datetime(2026, 10, 14, 11, 0, tzinfo=ET))
+ok("Hi Ari, the check is free" in page and "{" not in page.split("## Send")[1], "PRICE file carries the filled-in draft")
+page = R.render(item, "NO", {"first_name": "Ari", "company_name": "Acme"}, dt.datetime(2026, 10, 14, 11, 0, tzinfo=ET))
+ok("Nothing to send" in page, "NO file says send nothing")
 print("done")

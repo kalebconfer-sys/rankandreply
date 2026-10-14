@@ -37,8 +37,27 @@ except ZoneInfoNotFoundError:  # Windows Python has no tz database. US rule: 2nd
     dst = dt.date(t.year, 3, 8 + (6 - dt.date(t.year, 3, 8).weekday()) % 7) <= t < \
         dt.date(t.year, 11, 1 + (6 - dt.date(t.year, 11, 1).weekday()) % 7)
     ET = dt.timezone(dt.timedelta(hours=-4 if dst else -5), "ET")
-POSITIVE = {"SEND_IT", "PRICE", "WHAT", "CALL"}  # decision 3: wants the check or asks a question
+POSITIVE = {"SEND_IT", "PRICE", "WHAT", "CALL", "SKEPTIC", "FIXES"}  # wants the check or asks a question (step 11)
 T1 = "Thanks {first_name}. Running it now; you'll have it by {when}.\n\nKaleb"
+DATE = "October 13"  # the day the Perplexity answers quoted in Email 1 were run
+# The voted reply for each bucket (panel step 11, 2026-10-14). NO gets nothing; OTHER is read by hand.
+DRAFTS = {
+    "PRICE": "Hi {first_name}, the check is free: I run your buyers' top 10 questions through ChatGPT, Gemini, Perplexity "
+             "and Claude and send you a PDF with the counts and five fixes. If you then want the Fix Plan, that is $490 "
+             "one-time: I write the fixes, you publish them, and you decide after you have the report. Want the free "
+             "check? Reply \"send it.\"\n\nKaleb",
+    "WHAT": "Hi {first_name}, I'm Kaleb, a nurse in Erie, PA. Rank and Reply is just me. Yes, AI helped me draft the "
+            "email; the Perplexity answer quoted in it is real, run on {date}. The check is free and takes me about an "
+            "hour. Want it? Reply \"send it.\"\n\nKaleb",
+    "CALL": "Happy to, {first_name}. I can call {slot 1} or {slot 2} Eastern; which works? If you'd rather have something "
+            "concrete first, I'll run the free check and send it before we talk.\n\nKaleb",
+    "SKEPTIC": "Fair, {first_name}. AI helped me draft the email, and the Perplexity answer in it is a real result from "
+               "{date}, checked against {company_name}'s site before sending; that's the whole point of the check. If you "
+               "want it, it's free: reply \"send it.\" If not, no hard feelings.\n\nKaleb",
+    "FIXES": "{first_name}, the fixes depend on which answers name you and which sites the engines cite, so without the "
+             "run I'd be guessing. It takes me about an hour and costs you nothing. Reply \"send it\" and you'll have it "
+             "by {when}.\n\nKaleb",
+}
 
 # First match wins: "no thanks" must beat "thanks", a phone number is a call whatever else it says.
 RULES = (
@@ -49,6 +68,10 @@ RULES = (
                       r"do(?:n'?t| not) (?:contact|email|message)|not (?:for us|right now|at this time)|^no\.?$", re.I | re.M)),
     ("CALL", re.compile(r"\(?\b\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b|call me|give me a call|hop on a call|"
                         r"what'?s your (?:number|phone)", re.I)),
+    ("FIXES", re.compile(r"(?:just|only) (?:send|tell|give) me the fixes|what would you (?:change|fix|do)|skip the (?:report|pdf)",
+                         re.I)),
+    ("SKEPTIC", re.compile(r"(?:even|actually) read|ai[- ]generated|(?:this|it) (?:is|looks like) (?:ai|spam)|\bus(?:e|ing|ed) ai\b|"
+                           r"\bai (?:to|looking|wrote)|\bgeneric\b|\btemplate\b|mass email", re.I)),
     ("SEND_IT", re.compile(r"send (?:it|me|over|away|them)|\bsure\b|\byes\b|\byep\b|\byeah\b|\bok(?:ay)?\b|go ahead|"
                            r"sounds good|please do|interested|go for it|do it|show me|let'?s see|curious", re.I)),
     ("PRICE", re.compile(r"how much|what (?:does|would) (?:it|this) cost|\bcost\b|\bpric|\brate\b|\$\s?\d", re.I)),
@@ -151,16 +174,21 @@ def render(item: dict, bucket: str, lead: dict, now: dt.datetime) -> str:
                   f'5. python snapshot0.py snapshot --brand "{company}" --domain {domain} --aliases "<short name>" '
                   f'--questions q-{slug}.txt --claude claude-{slug}.json --runs 2 --out "<reports>/{slug}/{now:%Y-%m-%d}"',
                   "7. T2 with the PDF, no price.", ""]
+    elif bucket in DRAFTS:
+        text = DRAFTS[bucket]
+        for k, v in (("{first_name}", first), ("{company_name}", company), ("{when}", when(now)), ("{date}", DATE)):
+            text = text.replace(k, v)
+        lines += [f"## Send ({bucket}, voted in panel step 11): reply in the same thread from the Unibox", "", text, "",
+                  "Counts toward the kill bar. " + ("Ask for a number if they gave none." if bucket == "CALL" else
+                  "No price until they have the report." if bucket != "PRICE" else ""), ""]
     elif bucket == "BOUNCE":
         lines += ["## Next", "", "Hard bounce. Step 08 rule: pause the campaign (Kaleb's click) and check the address.", ""]
     elif bucket == "NO":
-        lines += ["## Next", "", "Nothing to send. Instantly stops the sequence on any reply.", ""]
-    elif bucket == "OTHER":
-        lines += ["## Next", "", "Unsorted: read it and answer by hand. Log it as positive only if they want the check "
-                  "or ask a question. No price until they have the report.", ""]
+        lines += ["## Next", "", "Nothing to send (step 11, 3 of 5). Instantly has stopped the sequence.", ""]
     else:
-        lines += ["## Next", "", "A question: it counts toward the kill bar. No approved draft for this reply type yet "
-                  "(panel step 11); answer by hand. The $490 Fix Plan is only quoted after they have the report.", ""]
+        lines += ["## Next", "", "Unsorted: read it and answer by hand, starting from the nearest draft in DRAFTS at the top "
+                  "of replies.py. Counts toward the kill bar only if they want the check or ask a question: then edit the "
+                  "bucket in log.md. No price until they have the report.", ""]
     return "\n".join(lines)
 
 
