@@ -61,7 +61,7 @@ load_env(HERE / ".env")
 # Model names change often. Override any of them in .env without touching code.
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-5-5")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")  # 2.5-flash is retired (404) for new keys
 PERPLEXITY_MODEL = os.getenv("PERPLEXITY_MODEL", "sonar-pro")
 LOCAL_MODEL = os.getenv("LOCAL_MODEL", "llama3.1:8b")
 LOCAL_URL = os.getenv("LOCAL_URL", "http://localhost:11434/v1")  # Ollama; LM Studio is http://localhost:1234/v1

@@ -37,6 +37,7 @@ import json
 import os
 import re
 import ssl
+import subprocess
 import sys
 import time
 import urllib.error
@@ -51,7 +52,8 @@ import council as C
 DATA = C.HERE.parent / "data"
 TODAY = dt.date.today().isoformat()
 
-ENGINE_LABEL = {"chatgpt": "ChatGPT", "gemini": "Gemini", "perplexity": "Perplexity", "claude": "Claude"}
+ENGINE_LABEL = {"chatgpt": "ChatGPT", "gemini": "Gemini", "perplexity": "Perplexity", "claude": "Claude",
+                "perplexity_app": "Perplexity"}
 
 # Hosts that aren't a company's own website. Grouping leads by these would merge strangers.
 SOCIAL_HOSTS = {
@@ -83,6 +85,8 @@ GENERIC_WORDS = {
     "software", "technologies", "technology", "tech", "solutions", "systems", "labs", "group", "holdings",
     "hq", "app", "apps", "ai", "io", "platform", "crm", "cloud", "online", "digital", "services", "consulting",
     "agency", "partners",
+    # industry words: an answer naming "Birch" must count against "Birch Veterinary"
+    "health", "healthcare", "medical", "veterinary", "clinical", "rx", "pharma", "bio", "therapeutics", "diagnostics",
 }
 
 
@@ -197,7 +201,10 @@ def ask_gemini(q: str) -> tuple[str, list[str]]:
     if not key:
         raise C.Unavailable("GEMINI_API_KEY not set")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{C.GEMINI_MODEL}:generateContent"
-    body = json.dumps({"contents": [{"role": "user", "parts": [{"text": q}]}], "tools": [{"google_search": {}}]}).encode()
+    payload = {"contents": [{"role": "user", "parts": [{"text": q}]}]}
+    if os.getenv("GEMINI_SEARCH", "1") != "0":  # free-tier keys get 429 on google_search; GEMINI_SEARCH=0 skips it
+        payload["tools"] = [{"google_search": {}}]
+    body = json.dumps(payload).encode()
     for attempt in range(4):
         req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json", "x-goog-api-key": key})
         try:
@@ -206,7 +213,7 @@ def ask_gemini(q: str) -> tuple[str, list[str]]:
             break
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 503) and attempt < 3:
-                time.sleep(2 ** (attempt + 1))
+                time.sleep(2 ** (attempt + 1) * (8 if e.code == 429 else 1))  # free-tier per-minute limits need ~1 min
                 continue
             raise
     cand = (data.get("candidates") or [{}])[0]
@@ -229,9 +236,24 @@ def ask_claude(q: str) -> tuple[str, list[str]]:
     return C.call_claude(q, web=True, effort="medium", sources=urls), urls
 
 
-ENGINES = {"chatgpt": ask_chatgpt, "gemini": ask_gemini, "perplexity": ask_perplexity, "claude": ask_claude}
+def ask_perplexity_app(q: str) -> tuple[str, list[str]]:
+    """The Perplexity app itself (live web search), through a local research-bridge install that drives a
+    signed-in Perplexity Pro browser. No API key; set RESEARCH_BRIDGE_PYTHON to that install's python.exe.
+    Always fresh, so a second run is a second real answer, not the cache."""
+    out = subprocess.run([os.environ["RESEARCH_BRIDGE_PYTHON"], "-m", "research_bridge.cli", "ask", "--mode", "search",
+                          "--fresh", q], capture_output=True, text=True, encoding="utf-8", timeout=900,
+                         env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+    if out.returncode:
+        raise RuntimeError((out.stderr or out.stdout).strip()[-300:])
+    answer, _, sources = out.stdout.partition("**Sources**")  # sources are not part of what the app said
+    return answer.strip(), re.findall(r"https?://\S+", sources)
+
+
+ENGINES = {"chatgpt": ask_chatgpt, "gemini": ask_gemini, "perplexity": ask_perplexity, "claude": ask_claude,
+           "perplexity_app": ask_perplexity_app}
 ENGINE_KEYS = {"chatgpt": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY",
-               "perplexity": "PERPLEXITY_API_KEY", "claude": "ANTHROPIC_API_KEY"}
+               "perplexity": "PERPLEXITY_API_KEY", "claude": "ANTHROPIC_API_KEY",
+               "perplexity_app": "RESEARCH_BRIDGE_PYTHON"}
 
 
 def ask(engine: str, q: str) -> tuple[bool, str, list[str]]:
@@ -383,10 +405,11 @@ def profile_company(brand: str, site: dict, n_questions: int, model: str, region
         f"Headings: {' | '.join(site.get('headings', []))}\nPage text: {site.get('text', '')[:2500]}\n\n"
         f"{region_line}"
         "From this, work out:\n"
-        "- category: what they sell, in the plain words a buyer would type (e.g. 'field service management software')\n"
+        "- category: what they sell, in 2-5 plain words a buyer would type (e.g. 'field service management software')\n"
         "- buyer: who buys it (e.g. 'HVAC companies with 5-50 technicians')\n"
-        "- buyer_question: the single most valuable question a buyer would ask ChatGPT when looking for this, "
-        "phrased exactly as a buyer would ask it, WITHOUT naming this company or any competitor\n"
+        "- buyer_question: the shortlist question a buyer would ask ChatGPT to get vendor names, under 12 words, "
+        "usually 'What's the best <category> for <buyer>?' (e.g. 'What's the best field service software for HVAC companies?'), "
+        "WITHOUT naming this company or any competitor\n"
         "- competitors: up to 5 direct competitors you are confident exist\n"
         f"- questions: {n_questions} different questions real buyers ask an AI assistant at the shortlist stage "
         "(best X for Y, alternatives to a big competitor, X vs Y, which X for a specific situation or budget). "

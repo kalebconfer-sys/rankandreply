@@ -36,6 +36,8 @@ ok(T.mention("For Denver roofing, the top picks are Acme and Beta.", ["Acme", "B
 T = V.Target("Acme Software, Inc.", "acmesoftware.com")
 ok(T.mention("Top: Acme, HubSpot and Jobber.", ["Acme", "HubSpot", "Jobber"]) == "yes", "extracted 'Acme' matches Acme Software, Inc.")
 ok(T.mention("Top: Acme, HubSpot and Jobber.", []) == "maybe", "short name alone -> maybe (never claimed)")
+T = V.Target("Birch Veterinary", "birchveterinary.com")
+ok(T.mention("Birch is my strongest pick; also Acme CarePlans.", ["Birch", "Acme CarePlans"]) == "yes", "'Birch' counts as Birch Veterinary")
 T = V.Target("Box", "box.com")
 ok(T.mention("Use dropbox.com or github.com", []) == "no", "box.com not matched inside dropbox.com")
 ok(T.mention("Try www.box.com today", []) == "yes", "www.box.com matched")
